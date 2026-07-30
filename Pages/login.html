@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+</head>
+
+<body>
+
+    <header>
+        <h1>StudentHub Portal</h1>
+    </header>
+
+    <nav>
+        <a href="index.html">Home</a> |
+        <a href="login.html">Login</a> |
+        <a href="register.html">Register</a>
+    </nav>
+
+    <main>
+
+        <section>
+
+            <form action="#" method="post">
+
+                <fieldset>
+
+                    <legend><b>User Login</b></legend>
+
+                    <p>
+                        <label for="email">Email Address:</label><br>
+                        <input
+                            id="email"
+                            type="email"
+                            name="email"
+                            placeholder="Enter your email"
+                            required>
+                    </p>
+
+                    <p>
+                        <label for="password">Password:</label><br>
+                        <input
+                            id="password"
+                            type="password"
+                            name="password"
+                            placeholder="Enter your password"
+                            required>
+                    </p>
+
+                    <p>
+                        <label for="role">Select Role:</label><br>
+
+                        <select id="role" name="role" required>
+
+                            <option value="">-- Select Role --</option>
+                            <option value="student">Student</option>
+                            <option value="admin">Admin</option>
+
+                        </select>
+
+                    </p>
+
+                    <p>
+                        <input
+                            type="checkbox"
+                            id="remember"
+                            name="remember">
+
+                        <label for="remember">Remember Me</label>
+                    </p>
+
+                    <p>
+                        <button type="submit">Login</button>
+                        <button type="reset">Clear</button>
+                    </p>
+
+                </fieldset>
+
+            </form>
+
+            <p>
+                Don't have an account?
+                <a href="register.html">Register</a>
+            </p>
+
+        </section>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2026 StudentHub Portal. All rights reserved.</p>
+    </footer>
+
+</body>
+
+</html>
