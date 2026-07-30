@@ -1,0 +1,129 @@
+body{
+    background-color: white;
+    font-family: Arial;
+    color: black;
+    margin: 0px;
+    padding: 0px;
+}
+
+header{
+    background-color: navy;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    margin-bottom: 10px;
+}
+
+nav{
+    background-color: gray;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+nav a{
+    color: white;
+    text-decoration: none;
+    padding: 10px;
+}
+
+nav a:hover{
+    color: yellow;
+}
+
+main{
+    padding: 20px;
+}
+
+section{
+    padding: 15px;
+    margin: 10px;
+}
+
+h1,h2,h3{
+    color: royalblue;
+}
+
+p{
+    color: black;
+}
+
+fieldset{
+    border: 2px solid navy;
+    padding: 15px;
+}
+
+label{
+    color: black;
+}
+
+input{
+    padding: 5px;
+}
+
+select{
+    padding: 5px;
+}
+
+button{
+    background-color: navy;
+    color: white;
+    padding: 8px;
+}
+
+button:hover{
+    background-color: green;
+}
+
+table{
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th{
+    background-color: navy;
+    color: white;
+}
+
+th,td{
+    border: 1px solid black;
+    padding: 8px;
+    text-align: center;
+}
+
+ul{
+    margin-left: 20px;
+}
+
+footer{
+    background-color: navy;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    margin-top: 20px;
+}
+
+.welcome{
+    color: royalblue;
+}
+
+#dashboard{
+    color: navy;
+}
+
+#dashboard-grid{
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 20px;
+}
+
+@media (max-width: 768px){
+
+    nav{
+        flex-direction: column;
+    }
+
+}
