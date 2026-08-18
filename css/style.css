@@ -120,6 +120,33 @@ footer{
     gap: 20px;
 }
 
+.profile-header{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.profile-header img{
+    border: 2px black solid;
+}
+
+.profile-grid{
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 20px;
+}
+
+.profile-grid div{
+    border: 1px solid gray;
+    padding: 10px;
+}
+
+.material{
+    display: grid;
+    padding: auto;  
+}
+
 @media (max-width: 768px){
 
     nav{
