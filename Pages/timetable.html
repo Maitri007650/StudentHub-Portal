@@ -4,160 +4,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <link rel="stylesheet" href="../css/style.css">
-    <title>Student Timetable</title>
+
+    <title>StudentHub Portal - Timetable</title>
 </head>
 
 <body>
 
-<header>
-    <h1>StudentHub Portal</h1>
-</header>
+    <header>
+        <h1>Student Timetable</h1>
+        <p>View your semester academic schedule.</p>
+    </header>
 
-<nav>
+    <nav>
+        <a href="home.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="register.html">Register</a>
+        <a href="login.html">Login</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="events.html">Events</a>
+        <a href="profile.html">Profile</a>
+        <a href="contact.html">Contact</a>
+        <a href="admin.html">Admin</a>
+        <a href="faq.html">FAQ</a>
+        <a href="timetable.html">Timetable</a>
+    </nav>
 
-    <a href="dashboard.html">Dashboard</a> 
-    <a href="attendance.html">Attendance</a> 
-    <a href="assignments.html">Assignments</a> 
-    <a href="study-materials.html">Study Materials</a> 
-    <a href="timetable.html">Timetable</a> 
-    <a href="notices.html">Notices</a> 
-    <a href="events.html">Events</a> 
-    <a href="profile.html">Profile</a> 
-    <a href="index.html">Logout</a>
+    <main>
 
-</nav>
+        <section>
 
-<main>
+            <h2>Semester Timetable</h2>
 
-<section>
+            <table>
 
-<h2>Semester Timetable</h2>
+                <caption>TIME TABLE CE-1</caption>
 
-<table border="1">
+                <thead>
+                    <tr>
+                        <th>Day</th>
+                        <th>9:10-10:10</th>
+                        <th>10:10-11:10</th>
+                        <th>11:10-12:10</th>
+                        <th>12:10-1:10</th>
+                        <th>1:10-2:10</th>
+                        <th>2:10-2:20</th>
+                        <th>2:20-3:20</th>
+                        <th>3:20-4:40</th>
+                    </tr>
+                </thead>
 
-<caption>
-<h3>TIME TABLE CE-1</h3>
-</caption>
+                <tbody>
 
-<tr>
-    <th>Day</th>
-    <th>9:10-10:10</th>
-    <th>10:10-11:10</th>
-    <th>11:10-12:10</th>
-    <th>12:10-1:10</th>
-    <th>1:10-2:10</th>
-    <th>2:10-2:20</th>
-    <th>2:20-3:20</th>
-    <th>3:20-4:40</th>
-</tr>
+                    <tr>
+                        <th>Monday</th>
+                        <td>ITUE203-WDF(T)</td>
+                        <td>ITUE203-WDF(T)</td>
+                        <td rowspan="6">Lunch Time</td>
+                        <td>ITUC201-FCN(T)</td>
+                        <td>CSUC201-FDSA(T)</td>
+                        <td rowspan="6">Short Break</td>
+                        <td colspan="2">
+                            A1-ITUC201(FCN)(P)<br>
+                            B1-ITUC201(FCN)(P)<br>
+                            C1-CEUE203(OOP)(P)<br>
+                            D1-CEUE203(OOP)(P)
+                        </td>
+                    </tr>
 
-<tr>
-    <th>Monday</th>
-    <td>ITUE203-WDF(T)</td>
-    <td>ITUE203-WDF(T)</td>
-    <td rowspan="6">Lunch Time</td>
-    <td>ITUC201-FCN(T)</td>
-    <td>CSUC201-FDSA(T)</td>
-    <td rowspan="6">Short Break</td>
-    <td colspan="2">
-        A1-ITUC201(FCN)(P)<br>
-        B1-ITUC201(FCN)(P)<br>
-        C1-CEUE203(OOP)(P)<br>
-        D1-CEUE203(OOP)(P)
-    </td>
-</tr>
+                    <tr>
+                        <th>Tuesday</th>
+                        <td colspan="2">
+                            A1-CEUE203(OOP)(P)<br>
+                            B1-CEUE203(OOP)(P)<br>
+                            C1-ITUE203(WDF)(P)<br>
+                            D1-ITUE203(WDF)(P)
+                        </td>
+                        <td>ITUE203-WDF(T)</td>
+                        <td>CSUC201-FDSA(T)</td>
+                        <td>HSUV201-HS</td>
+                        <td>HSUV201-HS</td>
+                    </tr>
 
-<tr>
-    <th>Tuesday</th>
-    <td colspan="2">
-        A1-CEUE203(OOP)(P)<br>
-        B1-CEUE203(OOP)(P)<br>
-        C1-ITUE203(WDF)(P)<br>
-        D1-ITUE203(WDF)(P)
-    </td>
+                    <tr>
+                        <th>Wednesday</th>
+                        <td colspan="2">
+                            A1-ITUE203(WDF)(P)<br>
+                            B1-ITUE203(WDF)(P)<br>
+                            C1-ITUC201(FCN)(P)<br>
+                            D1-ITUC201(FCN)(P)
+                        </td>
+                        <td colspan="2">Student Counselling</td>
+                        <td>MSUD203-Maths(T)</td>
+                        <td>ITUC201-FCN(T)</td>
+                    </tr>
 
-    <td>ITUE203-WDF(T)</td>
-    <td>CSUC201-FDSA(T)</td>
+                    <tr>
+                        <th>Thursday</th>
+                        <td>ITUC201-FCN(T)</td>
+                        <td>CSUC201-FDSA(T)</td>
+                        <td>ITUE203-WDF(T)</td>
+                        <td>CSUC201-FDSA(T)</td>
+                        <td colspan="2">
+                            A1-CSUC201(FDSA)(P)<br>
+                            B1-CSUC201(FDSA)(P)<br>
+                            C1-ITUE203(WDF)(P)<br>
+                            D1-ITUE203(WDF)(P)
+                        </td>
+                    </tr>
 
-    <td>HSUV201-HS</td>
-    <td>HSUV201-HS</td>
-</tr>
+                    <tr>
+                        <th>Friday</th>
+                        <td>CSUC201-FDSA(T)</td>
+                        <td>CSUC201-FDSA(T)</td>
+                        <td>CSUC201-FDSA(T)</td>
+                        <td>ITUC201-FCN(T)</td>
+                        <td colspan="2">
+                            A1-ITUE203(WDF)(P)<br>
+                            B1-ITUE203(WDF)(P)<br>
+                            C1-CSUC201(FDSA)(P)<br>
+                            D1-CSUC201(FDSA)(P)
+                        </td>
+                    </tr>
 
-<tr>
-    <th>Wednesday</th>
+                    <tr>
+                        <th>Saturday</th>
+                        <td>University Elective</td>
+                        <td>University Elective</td>
+                        <td>University Elective</td>
+                        <td>University Elective</td>
+                        <td>Skill Enhancement Sessions</td>
+                        <td>Skill Enhancement Sessions</td>
+                    </tr>
 
-    <td colspan="2">
-        A1-ITUE203(WDF)(P)<br>
-        B1-ITUE203(WDF)(P)<br>
-        C1-ITUC201(FCN)(P)<br>
-        D1-ITUC201(FCN)(P)
-    </td>
+                </tbody>
 
-    <td colspan="2">
-        Student Counselling
-    </td>
+            </table>
 
-    <td>MSUD203-Maths(T)</td>
-    <td>ITUC201-FCN(T)</td>
-</tr>
+        </section>
 
-<tr>
-    <th>Thursday</th>
+    </main>
 
-    <td>ITUC201-FCN(T)</td>
-    <td>CSUC201-FDSA(T)</td>
-
-    <td>ITUE203-WDF(T)</td>
-    <td>CSUC201-FDSA(T)</td>
-
-    <td colspan="2">
-        A1-CSUC201(FDSA)(P)<br>
-        B1-CSUC201(FDSA)(P)<br>
-        C1-ITUE203(WDF)(P)<br>
-        D1-ITUE203(WDF)(P)
-    </td>
-</tr>
-
-<tr>
-    <th>Friday</th>
-
-    <td>CSUC201-FDSA(T)</td>
-    <td>CSUC201-FDSA(T)</td>
-
-    <td>CSUC201-FDSA(T)</td>
-    <td>ITUC201-FCN(T)</td>
-
-    <td colspan="2">
-        A1-ITUE203(WDF)(P)<br>
-        B1-ITUE203(WDF)(P)<br>
-        C1-CSUC201(FDSA)(P)<br>
-        D1-CSUC201(FDSA)(P)
-    </td>
-</tr>
-
-<tr>
-    <th>Saturday</th>
-
-    <td>University Elective</td>
-    <td>University Elective</td>
-
-    <td>University Elective</td>
-    <td>University Elective</td>
-
-    <td>Skill Enhancement Sessions</td>
-    <td>Skill Enhancement Sessions</td>
-</tr>
-
-</table>
-
-</section>
-
-</main>
-
-<footer>
-<p>&copy; 2026 StudentHub Portal</p>
-</footer>
+    <footer>
+        <p>&copy; 2026 StudentHub Portal. All rights reserved.</p>
+    </footer>
 
 </body>
+
 </html>

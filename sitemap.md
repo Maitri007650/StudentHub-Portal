@@ -10,6 +10,16 @@ StudentHub Portal
 │   ├── Student Login
 │   └── Student Registration
 │
+├── About
+│   └── About StudentHub
+│
+├── Registration
+│   └── Student Registration Form
+│
+├── Login
+│   ├── Student Login
+│   └── Admin Login
+│
 ├── Student Portal
 │   │
 │   ├── Dashboard
@@ -41,9 +51,13 @@ StudentHub Portal
 │   │
 │   └── Logout
 │
+├── Contact
+│   └── Contact Form
+│
+├── FAQ
+│   └── Frequently Asked Questions
+│
 └── Admin Portal
-    │
-    ├── Admin Login
     │
     ├── Admin Dashboard
     │   ├── Overview

@@ -6,14 +6,33 @@ The main goal of this project is to provide a single platform for students to ac
 
 ## Current Project Status
 
-The project is currently in the **Planning and Design Phase**.
+The project is being developed progressively according to the practical requirements of the WDF subject.
 
 The following work has been completed:
 
 - Requirement Analysis
 - Sitemap
 - Low-Fidelity Wireframes
-- Initial Project Folder Structure
+- Project Folder Structure
+- HTML Pages
+- CSS Styling
+- Responsive Layout
+
+## Pages
+
+The current StudentHub Portal contains the following pages:
+
+1. Home
+2. About
+3. Registration
+4. Login
+5. Student Dashboard
+6. Events
+7. Profile
+8. Contact
+9. FAQ
+10. Admin Dashboard
+11. Timetable
 
 ## Wireframes
 
@@ -27,23 +46,31 @@ Five low-fidelity wireframes have been created for:
 
 ## Project Documentation
 
-- `requirement.md` — Contains the detailed requirements of the StudentHub Portal.
+- `requirement.md` — Contains the requirements of the StudentHub Portal.
 - `sitemap.md` — Shows the structure and navigation of the portal.
-- `wireframes/` — Contains the low-fidelity wireframes of the selected pages.
-
-## Project Development
-
-The StudentHub Portal will be developed gradually throughout the semester. The project will be expanded as new web development concepts are learned and implemented.
+- `wireframes/` — Contains the low-fidelity wireframes.
 
 ## Technologies
 
 The project will use web development technologies introduced during the semester, including:
 
-- HTML
-- CSS
+- HTML5
+- CSS3
 - JavaScript
 - PHP
 - MySQL
+- JSON
+- Fetch API / AJAX
+- Git
+- GitHub
+- VS Code
+
+## Project Development
+
+The StudentHub Portal will be developed gradually throughout the semester.
+
+The project currently focuses on HTML structure, CSS styling, responsive design, and basic page navigation. JavaScript, backend processing, database connectivity, authentication, and other required functionality will be implemented in later practicals.
 
 ## Author
+
 25CE081

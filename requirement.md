@@ -8,11 +8,11 @@ StudentHub Portal
 
 ## Problem Scope
 
-Students usually access attendance, assignments, notices, study materials, events, and other academic information from different sources. This makes it difficult to manage academic information efficiently.
+Students usually access attendance, assignments, notices, study materials, timetable, events, and other academic information from different sources. This makes it difficult to manage academic information efficiently.
 
 StudentHub Portal aims to provide a single platform where students can access important academic information and services easily.
 
-The project will initially focus on frontend development and will gradually include JavaScript functionality, backend processing, database connectivity, authentication, and admin features as the project progresses.
+The project will initially focus on frontend development and will gradually include JavaScript functionality, backend processing, database connectivity, authentication, and admin features as required by later practicals.
 
 ## User Roles
 
@@ -29,6 +29,8 @@ The student can:
 - Read Notices
 - View Events
 - View and Update Profile
+- Contact the portal
+- View frequently asked questions
 - Logout
 
 ### Admin
@@ -37,10 +39,8 @@ The admin can:
 
 - Login to the Admin Dashboard
 - View student information
-- Add, update, and delete student records
-- Search and filter student records
+- Manage student records
 - Manage events
-- Upload event posters
 - Logout
 
 ## Key Modules
@@ -57,6 +57,8 @@ The admin can:
 10. Student Management
 11. Event Management
 12. Admin Dashboard
+13. Contact
+14. FAQ
 
 ## Navigation Flow
 
@@ -64,7 +66,7 @@ The admin can:
 
 Home
 ↓
-Registration / Login
+About / Registration / Login / Contact / FAQ
 ↓
 Student Dashboard
 ↓
@@ -82,22 +84,19 @@ Student Management / Event Management
 ↓
 Logout
 
-## Minimum Pages
+## Current Pages
 
 1. Home
-2. Registration
-3. Login
-4. Student Dashboard
-5. Attendance
-6. Assignments
-7. Study Materials
-8. Timetable
-9. Notices
-10. Events
-11. Profile
-12. Admin Dashboard
-13. Student Management
-14. Event Management
+2. About
+3. Registration
+4. Login
+5. Student Dashboard
+6. Events
+7. Profile
+8. Contact
+9. FAQ
+10. Admin Dashboard
+11. Timetable
 
 ## Functional Requirements
 
@@ -113,6 +112,8 @@ The system should allow students to:
 - Read notices.
 - View available events.
 - View and update profile information.
+- Access contact information/form.
+- View frequently asked questions.
 
 The system should allow administrators to:
 
@@ -122,7 +123,7 @@ The system should allow administrators to:
 - Search and filter student records.
 - Perform CRUD operations on student information.
 - Manage events.
-- Upload event posters.
+- Upload event posters when required.
 
 ## Non-Functional Requirements
 
@@ -151,11 +152,13 @@ The application should have:
 
 ## Project Scope
 
-StudentHub Portal will be developed gradually throughout the semester. The project will begin with frontend pages and will later be extended with JavaScript functionality, backend processing, database connectivity, authentication, student management, event management, and an admin dashboard.
+StudentHub Portal will be developed gradually throughout the semester.
+
+The project begins with HTML pages, CSS styling, responsive design, and navigation. Later practicals will extend the project with JavaScript functionality, backend processing, database connectivity, authentication, student management, event management, and other required features.
 
 ## Limitations
 
 - The project will be developed in multiple stages.
 - Some features may initially use static or sample data.
 - Backend and database functionality will be added in later stages.
-- The final features will depend on the practical requirements covered during the semester.
+- Final functionality will depend on the practical requirements covered during the semester.

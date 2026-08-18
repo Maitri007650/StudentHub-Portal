@@ -4,37 +4,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <link rel="stylesheet" href="../css/style.css">
-    <title>Login Page</title>
+
+    <title>StudentHub Portal - Login</title>
 </head>
 
 <body>
 
     <header>
         <h1>StudentHub Portal</h1>
+        <p>Login to access your student account.</p>
     </header>
 
     <nav>
-        <a href="index.html">Home</a> 
-        <a href="login.html">Login</a> 
+        <a href="home.html">Home</a>
+        <a href="about.html">About</a>
         <a href="register.html">Register</a>
+        <a href="login.html">Login</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="events.html">Events</a>
+        <a href="profile.html">Profile</a>
+        <a href="contact.html">Contact</a>
+        <a href="admin.html">Admin</a>
+        <a href="faq.html">FAQ</a>
+        <a href="timetable.html">Timetable</a>
     </nav>
 
     <main>
 
         <section>
 
+            <h2>User Login</h2>
+
             <form action="#" method="post">
 
                 <fieldset>
 
-                    <legend><b>User Login</b></legend>
+                    <legend>Login Details</legend>
 
                     <p>
                         <label for="email">Email Address:</label><br>
                         <input
-                            id="email"
                             type="email"
+                            id="email"
                             name="email"
                             placeholder="Enter your email"
                             required>
@@ -43,8 +56,8 @@
                     <p>
                         <label for="password">Password:</label><br>
                         <input
-                            id="password"
                             type="password"
+                            id="password"
                             name="password"
                             placeholder="Enter your password"
                             required>
@@ -54,13 +67,10 @@
                         <label for="role">Select Role:</label><br>
 
                         <select id="role" name="role" required>
-
                             <option value="">-- Select Role --</option>
                             <option value="student">Student</option>
                             <option value="admin">Admin</option>
-
                         </select>
-
                     </p>
 
                     <p>
@@ -83,7 +93,7 @@
 
             <p>
                 Don't have an account?
-                <a href="register.html">Register</a>
+                <a href="register.html">Register here</a>
             </p>
 
         </section>
