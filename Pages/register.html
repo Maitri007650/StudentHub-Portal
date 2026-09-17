@@ -37,7 +37,7 @@
 
             <h2>Student Registration</h2>
 
-            <form action="#" method="post">
+            <form id="registrationForm" action="#" method="post">
 
                 <fieldset>
 
@@ -49,8 +49,11 @@
                             type="text"
                             id="name"
                             name="name"
+                            pattern="[A-Za-z ]{2,50}"
+                            title="Name should contain only letters and spaces"
                             placeholder="Enter your full name"
                             required>
+                        <span id="nameError"></span>
                     </p>
 
                     <p>
@@ -61,6 +64,20 @@
                             name="email"
                             placeholder="Enter your email"
                             required>
+                        <span id="emailError"></span>
+                    </p>
+
+                    <p>
+                        <label for="mobile">Mobile Number:</label><br>
+                        <input
+                            type="tel"
+                            id="mobile"
+                            name="mobile"
+                            pattern="[0-9]{10}"
+                            title="Enter a valid 10-digit mobile number"
+                            placeholder="Enter 10-digit mobile number"
+                            required>
+                        <span id="mobileError"></span>
                     </p>
 
                     <p>
@@ -71,6 +88,18 @@
                             name="password"
                             placeholder="Create a password"
                             required>
+                        <span id="passwordError"></span>
+                    </p>
+
+                    <p>
+                        <label for="confirmPassword">Confirm Password:</label><br>
+                        <input
+                            type="password"
+                            id="confirmPassword"
+                            name="confirmPassword"
+                            placeholder="Confirm your password"
+                            required>
+                        <span id="confirmPasswordError"></span>
                     </p>
 
                     <p>
@@ -81,12 +110,65 @@
                             name="course"
                             placeholder="Enter your course"
                             required>
+                        <span id="courseError"></span>
+                    </p>
+
+                    <p>
+                        <label for="year">Year:</label><br>
+                        <select id="year" name="year" required>
+                            <option value="">Select Year</option>
+                            <option value="1">1st Year</option>
+                            <option value="2">2nd Year</option>
+                            <option value="3">3rd Year</option>
+                            <option value="4">4th Year</option>
+                        </select>
+                        <span id="yearError"></span>
+                    </p>
+
+                    <p>
+                        <label>Gender:</label><br>
+
+                        <input
+                            type="radio"
+                            id="male"
+                            name="gender"
+                            value="Male"
+                            required>
+                        <label for="male">Male</label>
+
+                        <input
+                            type="radio"
+                            id="female"
+                            name="gender"
+                            value="Female">
+                        <label for="female">Female</label>
+
+                        <input
+                            type="radio"
+                            id="other"
+                            name="gender"
+                            value="Other">
+                        <label for="other">Other</label>
+
+                        <span id="genderError"></span>
+                    </p>
+
+                    <p>
+                        <input
+                            type="checkbox"
+                            id="terms"
+                            name="terms"
+                            required>
+                        <label for="terms">I accept the terms and conditions.</label>
+                        <span id="termsError"></span>
                     </p>
 
                     <p>
                         <button type="submit">Register</button>
                         <button type="reset">Clear</button>
                     </p>
+
+                    <p id="successMessage"></p>
 
                 </fieldset>
 
@@ -104,6 +186,8 @@
     <footer>
         <p>&copy; 2026 StudentHub Portal. All rights reserved.</p>
     </footer>
+
+    <script src="../js/register.js"></script>
 
 </body>
 

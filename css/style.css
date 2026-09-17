@@ -276,6 +276,18 @@ footer p {
 
 }
 
+span {
+    display: block;
+    margin-top: 5px;
+    color: red;
+    font-size: 14px;
+}
+
+#successMessage {
+    color: green;
+    font-weight: bold;
+}
+
 @media (max-width: 480px) {
 
     header {
