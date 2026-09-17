@@ -104,6 +104,7 @@ p {
 
 form {
     max-width: 700px;
+    margin: 0 auto;
 }
 
 fieldset {
@@ -574,4 +575,33 @@ span {
         padding: 20px;
     }
 
+}
+
+#passwordStrength {
+    color: navy;
+    font-weight: bold;
+}
+
+.register-section h2 {
+    text-align: center;
+}
+
+.register-section form {
+    margin: 0 auto;
+}
+
+.register-section > p {
+    text-align: center;
+}
+
+.login-section h2 {
+    text-align: center;
+}
+
+.login-section form {
+    margin: 0 auto;
+}
+
+.login-section > p {
+    text-align: center;
 }

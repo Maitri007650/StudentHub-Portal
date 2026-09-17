@@ -42,11 +42,12 @@
 
     <main>
 
-        <section>
+        <section class="register-section">
 
             <h2>Student Registration</h2>
 
-            <form id="registrationForm" action="#" method="post">
+            <form id="registrationForm" action="#" method="post" novalidate>
+                
 
                 <fieldset>
 
@@ -63,6 +64,7 @@
                             placeholder="Enter your full name"
                             required>
                         <span id="nameError"></span>
+                        
                     </p>
 
                     <p>
@@ -95,9 +97,12 @@
                             type="password"
                             id="password"
                             name="password"
+                            pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,}"
+                            title="Password must contain at least 8 characters, including uppercase, lowercase, number and special character"
                             placeholder="Create a password"
                             required>
                         <span id="passwordError"></span>
+                        <span id="passwordStrength"></span>
                     </p>
 
                     <p>
@@ -112,11 +117,21 @@
                     </p>
 
                     <p>
+                        <input
+                            type="checkbox"
+                            id="showPassword"
+                            name="showPassword">
+                        <label for="showPassword">Show Password</label>
+                    </p>
+
+                    <p>
                         <label for="course">Course:</label><br>
                         <input
                             type="text"
                             id="course"
                             name="course"
+                            pattern="[A-Za-z ]{2,50}"
+                            title="Course should contain only letters and spaces"
                             placeholder="Enter your course"
                             required>
                         <span id="courseError"></span>
@@ -187,7 +202,6 @@
                 Already have an account?
                 <a href="login.html">Login here</a>
             </p>
-
         </section>
 
     </main>
