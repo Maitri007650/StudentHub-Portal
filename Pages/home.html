@@ -20,7 +20,22 @@
         </p>
     </header>
 
+    <div id="notificationBanner">
+
+        Welcome to StudentHub Portal.
+
+        <button id="closeNotification" type="button">
+            Close
+        </button>
+
+    </div>
+
+    <button id="menuToggle" type="button">
+        ☰ Menu
+    </button>
+
     <nav>
+
         <a href="home.html">Home</a>
         <a href="about.html">About</a>
         <a href="register.html">Register</a>
@@ -32,6 +47,11 @@
         <a href="admin.html">Admin</a>
         <a href="faq.html">FAQ</a>
         <a href="timetable.html">Timetable</a>
+
+        <button id="themeToggle" type="button">
+            Dark Mode
+        </button>
+
     </nav>
 
     <main>
@@ -48,6 +68,10 @@
             <a href="login.html">Login to StudentHub</a>
 
             <a href="register.html">Create an Account</a>
+
+            <button id="openModal" type="button">
+                View Welcome Message
+            </button>
 
         </section>
 
@@ -105,6 +129,42 @@
         </section>
 
 
+        <section class="slider">
+
+            <h2>StudentHub Highlights</h2>
+
+            <article class="slide">
+                <h3>Academic Information</h3>
+                <p>
+                    Access important academic information in one place.
+                </p>
+            </article>
+
+            <article class="slide">
+                <h3>College Events</h3>
+                <p>
+                    Stay updated with upcoming student and college events.
+                </p>
+            </article>
+
+            <article class="slide">
+                <h3>Student Services</h3>
+                <p>
+                    Access useful student services through StudentHub.
+                </p>
+            </article>
+
+            <button id="previousButton" type="button">
+                Previous
+            </button>
+
+            <button id="nextButton" type="button">
+                Next
+            </button>
+
+        </section>
+
+
         <section class="about-section">
 
             <h2>About StudentHub</h2>
@@ -114,15 +174,44 @@
                 academic information together on a single platform.
             </p>
 
-            <a href="about.html">Learn More About StudentHub</a>
+            <a href="about.html">
+                Learn More About StudentHub
+            </a>
 
         </section>
 
     </main>
 
+
+    <div id="welcomeModal">
+
+        <div class="modal-content">
+
+            <button id="closeModal" type="button">
+                Close
+            </button>
+
+            <h2>Welcome to StudentHub</h2>
+
+            <p>
+                StudentHub Portal provides students with easy access
+                to academic information and student services.
+            </p>
+
+        </div>
+
+    </div>
+
+
     <footer>
-        <p>&copy; 2026 StudentHub Portal. All rights reserved.</p>
+
+        <p>
+            &copy; 2026 StudentHub Portal. All rights reserved.
+        </p>
+
     </footer>
+
+    <script src="../js/script.js"></script>
 
 </body>
 

@@ -17,7 +17,12 @@
         <p>Find answers to common StudentHub questions.</p>
     </header>
 
+    <button id="menuToggle" type="button" aria-expanded="false">
+        ☰ Menu
+    </button>
+
     <nav>
+
         <a href="home.html">Home</a>
         <a href="about.html">About</a>
         <a href="register.html">Register</a>
@@ -29,6 +34,9 @@
         <a href="admin.html">Admin</a>
         <a href="faq.html">FAQ</a>
         <a href="timetable.html">Timetable</a>
+
+        <button id="themeToggle" type="button">Dark Mode</button>
+
     </nav>
 
     <main>
@@ -38,42 +46,82 @@
             <h2>Common Questions</h2>
 
             <article class="faq-item">
-                <h3>What is StudentHub?</h3>
-                <p>
+
+                <button class="faq-question"
+                    type="button"
+                    aria-expanded="false"
+                    aria-controls="faq1">
+                    What is StudentHub?
+                </button>
+
+                <p id="faq1" hidden>
                     StudentHub is a student portal that provides access
                     to academic information and student services.
                 </p>
+
             </article>
 
             <article class="faq-item">
-                <h3>How can I register?</h3>
-                <p>
+
+                <button class="faq-question"
+                    type="button"
+                    aria-expanded="false"
+                    aria-controls="faq2">
+                    How can I register?
+                </button>
+
+                <p id="faq2" hidden>
                     You can register by visiting the Register page and
                     completing the registration form.
                 </p>
+
             </article>
 
             <article class="faq-item">
-                <h3>How can I log in?</h3>
-                <p>
+
+                <button class="faq-question"
+                    type="button"
+                    aria-expanded="false"
+                    aria-controls="faq3">
+                    How can I log in?
+                </button>
+
+                <p id="faq3" hidden>
                     Use the Login page and enter your registered
                     account details.
                 </p>
+
             </article>
 
             <article class="faq-item">
-                <h3>Where can I view my timetable?</h3>
-                <p>
+
+                <button class="faq-question"
+                    type="button"
+                    aria-expanded="false"
+                    aria-controls="faq4">
+                    Where can I view my timetable?
+                </button>
+
+                <p id="faq4" hidden>
                     You can view your academic schedule on the Timetable page.
                 </p>
+
             </article>
 
             <article class="faq-item">
-                <h3>Where can I find upcoming events?</h3>
-                <p>
+
+                <button class="faq-question"
+                    type="button"
+                    aria-expanded="false"
+                    aria-controls="faq5">
+                    Where can I find upcoming events?
+                </button>
+
+                <p id="faq5" hidden>
                     Upcoming student and college events are available
                     on the Events page.
                 </p>
+
             </article>
 
         </section>
@@ -83,6 +131,8 @@
     <footer>
         <p>&copy; 2026 StudentHub Portal. All rights reserved.</p>
     </footer>
+
+    <script src="../js/script.js"></script>
 
 </body>
 
