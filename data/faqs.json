@@ -1,0 +1,77 @@
+[
+    {
+        "id": 1,
+        "question": "What is StudentHub?",
+        "answer": "StudentHub is a student portal that provides academic information and student services."
+    },
+    {
+        "id": 2,
+        "question": "How can I register?",
+        "answer": "You can register by visiting the Register page and completing the registration form."
+    },
+    {
+        "id": 3,
+        "question": "How can I log in?",
+        "answer": "Use the Login page and enter your registered account details."
+    },
+    {
+        "id": 4,
+        "question": "Where can I view my timetable?",
+        "answer": "You can view your academic schedule on the Timetable page."
+    },
+    {
+        "id": 5,
+        "question": "Where can I find upcoming events?",
+        "answer": "Upcoming student and college events are available on the Events page."
+    },
+    {
+        "id": 6,
+        "question": "Where can I check attendance?",
+        "answer": "Attendance information can be viewed from the student dashboard."
+    },
+    {
+        "id": 7,
+        "question": "Where can I find assignments?",
+        "answer": "Assignment information is available through the student dashboard."
+    },
+    {
+        "id": 8,
+        "question": "Where can I access study materials?",
+        "answer": "Study materials can be accessed from the StudentHub resources section."
+    },
+    {
+        "id": 9,
+        "question": "How can I update my profile?",
+        "answer": "You can update profile information from the Profile page."
+    },
+    {
+        "id": 10,
+        "question": "How can I contact the college?",
+        "answer": "You can use the Contact page to find college contact information."
+    },
+    {
+        "id": 11,
+        "question": "Can I change my password?",
+        "answer": "Password changing can be added when account management is connected to the backend."
+    },
+    {
+        "id": 12,
+        "question": "How can I view college notices?",
+        "answer": "Important notices can be displayed through the StudentHub portal."
+    },
+    {
+        "id": 13,
+        "question": "Who can use StudentHub?",
+        "answer": "StudentHub is designed mainly for students and administrators."
+    },
+    {
+        "id": 14,
+        "question": "Is StudentHub mobile friendly?",
+        "answer": "Yes, the portal is designed to work on mobile, tablet, and desktop screens."
+    },
+    {
+        "id": 15,
+        "question": "Where can I see student events?",
+        "answer": "Upcoming student and college events are shown on the Events page."
+    }
+]

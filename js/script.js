@@ -427,3 +427,276 @@ if (form) {
     });
 
 }
+
+const eventsTableBody = document.getElementById("eventsTableBody");
+
+if (eventsTableBody) {
+
+    const searchInput = document.getElementById("eventSearch");
+    const filterSelect = document.getElementById("eventFilter");
+    const sortSelect = document.getElementById("eventSort");
+
+    const loadingMessage = document.getElementById("eventLoading");
+    const errorMessage = document.getElementById("eventError");
+
+    const previousPage = document.getElementById("previousPage");
+    const nextPage = document.getElementById("nextPage");
+    const pageNumber = document.getElementById("pageNumber");
+
+    let events = [];
+    let currentPage = 1;
+    const eventsPerPage = 5;
+
+    fetch("../data/events.json")
+        .then(function (response) {
+
+            if (!response.ok) {
+                throw new Error("Unable to load events.");
+            }
+
+            return response.json();
+
+        })
+        .then(function (data) {
+
+            events = data;
+
+            loadingMessage.textContent = "";
+
+            displayEvents();
+
+        })
+        .catch(function (error) {
+
+            loadingMessage.textContent = "";
+            errorMessage.textContent = "Error loading events.";
+
+            console.log(error);
+
+        });
+
+
+    function displayEvents() {
+
+        let result = events;
+
+        const searchText = searchInput.value.toLowerCase();
+        const category = filterSelect.value;
+        const sortType = sortSelect.value;
+
+
+        result = result.filter(function (event) {
+
+            return event.event.toLowerCase().includes(searchText);
+
+        });
+
+
+        result = result.filter(function (event) {
+
+            if (category === "All") {
+                return true;
+            }
+
+            return event.category === category;
+
+        });
+
+
+        result.sort(function (a, b) {
+
+            if (sortType === "name") {
+                return a.event.localeCompare(b.event);
+            }
+
+            return new Date(a.date) - new Date(b.date);
+
+        });
+
+
+        const start = (currentPage - 1) * eventsPerPage;
+        const end = start + eventsPerPage;
+
+        const pageEvents = result.slice(start, end);
+
+
+        eventsTableBody.innerHTML = "";
+
+
+        pageEvents.forEach(function (event) {
+
+            const row = document.createElement("tr");
+
+            row.innerHTML =
+                "<td>" + event.event + "</td>" +
+                "<td>" + event.date + "</td>" +
+                "<td>" + event.category + "</td>";
+
+            eventsTableBody.appendChild(row);
+
+        });
+
+
+        pageNumber.textContent = "Page " + currentPage;
+
+        previousPage.disabled = currentPage === 1;
+
+        nextPage.disabled = end >= result.length;
+
+    }
+
+
+    searchInput.addEventListener("input", function () {
+
+        currentPage = 1;
+        displayEvents();
+
+    });
+
+
+    filterSelect.addEventListener("change", function () {
+
+        currentPage = 1;
+        displayEvents();
+
+    });
+
+
+    sortSelect.addEventListener("change", function () {
+
+        currentPage = 1;
+        displayEvents();
+
+    });
+
+
+    previousPage.addEventListener("click", function () {
+
+        if (currentPage > 1) {
+            currentPage--;
+            displayEvents();
+        }
+
+    });
+
+
+    nextPage.addEventListener("click", function () {
+
+        currentPage++;
+        displayEvents();
+
+    });
+
+}
+
+// FAQ JSON
+
+const faqList = document.getElementById("faqList");
+
+if (faqList) {
+
+    const faqLoading = document.getElementById("faqLoading");
+    const faqError = document.getElementById("faqError");
+
+    fetch("../data/faqs.json")
+        .then(function (response) {
+
+            if (!response.ok) {
+                throw new Error("Unable to load FAQs.");
+            }
+
+            return response.json();
+
+        })
+        .then(function (data) {
+
+            faqLoading.textContent = "";
+
+            data.forEach(function (faq) {
+
+                const article = document.createElement("article");
+
+                article.className = "faq-item";
+
+                article.innerHTML =
+                    '<button class="faq-question" type="button">' +
+                    faq.question +
+                    '</button>' +
+                    '<p hidden>' +
+                    faq.answer +
+                    '</p>';
+
+                faqList.appendChild(article);
+
+                const question = article.querySelector(".faq-question");
+                const answer = article.querySelector("p");
+
+                question.addEventListener("click", function () {
+
+                    answer.hidden = !answer.hidden;
+
+                });
+
+            });
+
+        })
+        .catch(function (error) {
+
+            faqLoading.textContent = "";
+            faqError.textContent = "Error loading FAQs.";
+
+            console.log(error);
+
+        });
+
+}
+
+
+// Students JSON
+
+const studentList = document.getElementById("studentList");
+
+if (studentList) {
+
+    const studentLoading = document.getElementById("studentLoading");
+    const studentError = document.getElementById("studentError");
+
+    fetch("../data/students.json")
+        .then(function (response) {
+
+            if (!response.ok) {
+                throw new Error("Unable to load students.");
+            }
+
+            return response.json();
+
+        })
+        .then(function (data) {
+
+            studentLoading.textContent = "";
+
+            data.forEach(function (student) {
+
+                const studentBox = document.createElement("div");
+
+                studentBox.innerHTML =
+                    "<strong>Name:</strong><p>" + student.name + "</p>" +
+                    "<strong>Course:</strong><p>" + student.course + "</p>" +
+                    "<strong>Year:</strong><p>" + student.year + "</p>" +
+                    "<strong>Email:</strong><p>" + student.email + "</p>";
+
+                studentList.appendChild(studentBox);
+
+            });
+
+        })
+        .catch(function (error) {
+
+            studentLoading.textContent = "";
+            studentError.textContent = "Error loading students.";
+
+            console.log(error);
+
+        });
+
+}

@@ -1,0 +1,92 @@
+[
+    {
+        "id": 1,
+        "event": "Web Development Workshop",
+        "date": "2026-11-05",
+        "category": "Technology"
+    },
+    {
+        "id": 2,
+        "event": "Coding Competition",
+        "date": "2026-11-10",
+        "category": "Technology"
+    },
+    {
+        "id": 3,
+        "event": "Sports Day",
+        "date": "2026-11-15",
+        "category": "Sports"
+    },
+    {
+        "id": 4,
+        "event": "Cultural Fest",
+        "date": "2026-11-20",
+        "category": "Cultural"
+    },
+    {
+        "id": 5,
+        "event": "AI Seminar",
+        "date": "2026-11-25",
+        "category": "Technology"
+    },
+    {
+        "id": 6,
+        "event": "Quiz Competition",
+        "date": "2026-12-02",
+        "category": "Academic"
+    },
+    {
+        "id": 7,
+        "event": "Hackathon",
+        "date": "2026-12-05",
+        "category": "Technology"
+    },
+    {
+        "id": 8,
+        "event": "Cricket Tournament",
+        "date": "2026-12-10",
+        "category": "Sports"
+    },
+    {
+        "id": 9,
+        "event": "Music Night",
+        "date": "2026-12-12",
+        "category": "Cultural"
+    },
+    {
+        "id": 10,
+        "event": "Career Guidance Session",
+        "date": "2026-12-15",
+        "category": "Academic"
+    },
+    {
+        "id": 11,
+        "event": "Project Exhibition",
+        "date": "2026-12-18",
+        "category": "Academic"
+    },
+    {
+        "id": 12,
+        "event": "Football Tournament",
+        "date": "2026-12-20",
+        "category": "Sports"
+    },
+    {
+        "id": 13,
+        "event": "Cyber Security Workshop",
+        "date": "2026-12-22",
+        "category": "Technology"
+    },
+    {
+        "id": 14,
+        "event": "Photography Contest",
+        "date": "2026-12-24",
+        "category": "Cultural"
+    },
+    {
+        "id": 15,
+        "event": "Annual College Function",
+        "date": "2026-12-30",
+        "category": "Cultural"
+    }
+]

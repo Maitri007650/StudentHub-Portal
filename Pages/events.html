@@ -47,37 +47,57 @@
 
             <h2>Upcoming Events</h2>
 
-            <table>
+            <label for="eventSearch">Search Events:</label>
+        <input type="text" id="eventSearch" placeholder="Search events">
 
-                <caption>Upcoming College Events</caption>
+        <label for="eventFilter">Filter by Category:</label>
+        <select id="eventFilter">
+            <option value="All">All Categories</option>
+            <option value="Academic">Academic</option>
+            <option value="Technology">Technology</option>
+            <option value="Sports">Sports</option>
+            <option value="Cultural">Cultural</option>
+        </select>
 
-                <thead>
-                    <tr>
-                        <th>Event</th>
-                        <th>Date</th>
-                    </tr>
-                </thead>
+        <label for="eventSort">Sort Events:</label>
+        <select id="eventSort">
+            <option value="date">Date</option>
+            <option value="name">Event Name</option>
+        </select>
 
-                <tbody>
+        <p id="eventLoading">Loading events...</p>
+        <p id="eventError"></p>
 
-                    <tr>
-                        <td>Hackathon</td>
-                        <td>12 August 2026</td>
-                    </tr>
+        <table>
 
-                    <tr>
-                        <td>Sports Day</td>
-                        <td>18 August 2026</td>
-                    </tr>
+            <caption>Upcoming College Events</caption>
 
-                    <tr>
-                        <td>Tech Seminar</td>
-                        <td>25 August 2026</td>
-                    </tr>
+            <thead>
+                <tr>
+                    <th>Event</th>
+                    <th>Date</th>
+                    <th>Category</th>
+                </tr>
+            </thead>
 
-                </tbody>
+            <tbody id="eventsTableBody">
+            </tbody>
 
-            </table>
+        </table>
+
+        <div id="eventPagination">
+
+            <button id="previousPage" type="button">
+                Previous
+            </button>
+
+            <span id="pageNumber">Page 1</span>
+
+            <button id="nextPage" type="button">
+                Next
+            </button>
+
+        </div>
 
         </section>
 
