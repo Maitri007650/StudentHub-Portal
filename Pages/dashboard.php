@@ -1,0 +1,95 @@
+<?php
+require_once __DIR__ . "/auth.php";
+?>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="../css/style.css">
+
+    <title>StudentHub Portal - Dashboard</title>
+</head>
+
+<body>
+    <header>
+        <h1>Student Dashboard</h1>
+        <p>Welcome to your StudentHub dashboard.</p>
+        <div class="logout-container">
+            <a href="logout.php" class="logout-btn">Logout</a>
+        </div>
+    </header>
+
+
+    <button id="menuToggle" type="button" aria-expanded="false">
+        ☰ Menu
+    </button>
+
+    <nav>
+
+        <a href="home.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="register.html">Register</a>
+        <a href="login.html">Login</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="events.html">Events</a>
+        <a href="profile.html">Profile</a>
+        <a href="contact.html">Contact</a>
+        <a href="admin.html">Admin</a>
+        <a href="faq.html">FAQ</a>
+        <a href="timetable.html">Timetable</a>
+
+        <button id="themeToggle" type="button">Dark Mode</button>
+
+    </nav>
+
+
+    <main>
+
+        <section>
+            <h2>Welcome Student</h2>
+            <p>
+                Welcome to your StudentHub Dashboard.
+                Here you can access important student information and services.
+            </p>
+        </section>
+
+        <section>
+            <h2>Quick Statistics</h2>
+
+            <div class="feature-grid">
+
+                <article class="feature-card">
+                    <h3>Attendance</h3>
+                    <p>85%</p>
+                </article>
+
+                <article class="feature-card">
+                    <h3>Pending Assignments</h3>
+                    <p>3</p>
+                </article>
+
+                <article class="feature-card">
+                    <h3>Upcoming Events</h3>
+                    <p>2</p>
+                </article>
+
+            </div>
+        </section>
+
+        <section>
+            <h2>Recent Activity</h2>
+            <p>No recent activity available.</p>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2026 StudentHub Portal. All rights reserved.</p>
+    </footer>
+    <script src="../js/script.js"></script>
+</body>
+
+</html>

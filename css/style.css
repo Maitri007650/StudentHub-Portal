@@ -605,3 +605,33 @@ span {
 .login-section > p {
     text-align: center;
 }
+.logout-container {
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px 25px;
+}
+
+.logout-container {
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px 25px;
+}
+
+.logout-btn {
+    display: inline-block;
+    background-color: #e74c3c;
+    color: white;
+    padding: 10px 22px;
+    text-decoration: none;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.logout-btn:hover {
+    background-color: #c0392b;
+    color: white;
+}
