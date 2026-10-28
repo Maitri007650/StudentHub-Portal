@@ -1,37 +1,56 @@
 
 <?php
 session_start();
-require_once "../config/db.php";
+require_once __DIR__ . "/../config/db.php";
 
 $message = "";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $email = trim($_POST["email"] ?? "");
+    $email = strtolower(trim($_POST["email"] ?? ""));
     $password = $_POST["password"] ?? "";
     $role = $_POST["role"] ?? "";
 
     if ($role === "student") {
-        $stmt = $pdo->prepare(
-            "SELECT student_id, name, email, password
-             FROM students
-             WHERE email = ?"
-        );
-        $stmt->execute([$email]);
-        $student = $stmt->fetch();
+        try {
+            $stmt = $conn->prepare(
+                "SELECT student_id, name, email, password
+                 FROM students
+                 WHERE email = ?"
+            );
 
-        if ($student && password_verify($password, $student["password"])) {
-            session_regenerate_id(true);
+            $stmt->bind_param("s", $email);
+            $stmt->execute();
 
-            $_SESSION["student_id"] = $student["student_id"];
-            $_SESSION["student_name"] = $student["name"];
-            $_SESSION["student_email"] = $student["email"];
-            $_SESSION["role"] = "student";
+            $result = $stmt->get_result();
+            $student = $result->fetch_assoc();
+            $stmt->close();
 
-            $message = "Login successful! Welcome, "
-                     . htmlspecialchars($student["name"], ENT_QUOTES, "UTF-8");
-        } else {
-            $message = "Invalid email or password.";
+            if (
+                $student &&
+                password_verify($password, $student["password"])
+            ) {
+                session_regenerate_id(true);
+
+                $_SESSION["student_id"] = $student["student_id"];
+                $_SESSION["student_name"] = $student["name"];
+                $_SESSION["student_email"] = $student["email"];
+                $_SESSION["role"] = "student";
+
+                $message = "Login successful! Welcome, "
+                    . htmlspecialchars(
+                        $student["name"],
+                        ENT_QUOTES,
+                        "UTF-8"
+                    );
+            } else {
+                $message = "Invalid email or password.";
+            }
+
+        } catch (mysqli_sql_exception $e) {
+            error_log("StudentHub login error: " . $e->getMessage());
+            $message = "Login failed because of a database error. Please try again.";
         }
+
     } else {
         $message = "Admin login is not configured yet. Please select Student.";
     }

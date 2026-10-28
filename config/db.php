@@ -5,18 +5,12 @@ $dbname = "studenthub";
 $username = "root";
 $password = "";
 
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+
 try {
-    $pdo = new PDO(
-        "mysql:host=$host;dbname=$dbname;charset=utf8mb4",
-        $username,
-        $password,
-        [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            PDO::ATTR_EMULATE_PREPARES => false
-        ]
-    );
-} catch (PDOException $e) {
+    $conn = new mysqli($host, $username, $password, $dbname);
+    $conn->set_charset("utf8mb4");
+} catch (mysqli_sql_exception $e) {
     error_log($e->getMessage());
     die("Unable to connect to the database.");
 }

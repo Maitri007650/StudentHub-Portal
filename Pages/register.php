@@ -1,6 +1,7 @@
 
 <?php
 require_once __DIR__ . '/../config/db.php';
+
 $message = "";
 $messageType = "";
 
@@ -15,7 +16,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $gender = $_POST["gender"] ?? "";
     $terms = isset($_POST["terms"]);
 
-    // Validate all registration fields on the server.
     if (
         !preg_match("/^[A-Za-z ]{2,50}$/", $name) ||
         !filter_var($email, FILTER_VALIDATE_EMAIL) ||
@@ -44,63 +44,70 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     } else {
         try {
-            // Check whether the email is already registered.
-            $check = $pdo->prepare(
-                "SELECT student_id FROM students WHERE email = :email"
+            // Check for an existing email.
+            $check = $conn->prepare(
+                "SELECT student_id FROM students WHERE email = ?"
             );
-            $check->execute(["email" => $email]);
+            $check->bind_param("s", $email);
+            $check->execute();
+            $check->store_result();
 
-            if ($check->fetch()) {
+            if ($check->num_rows > 0) {
                 $message = "This email is already registered.";
                 $messageType = "error";
+                $check->close();
 
             } else {
-                // Never store the original password.
+                $check->close();
+
+                // Hash the password before storing it.
                 $hashedPassword = password_hash(
                     $password,
                     PASSWORD_DEFAULT
                 );
 
-                // Insert the new student using a prepared statement.
-                $sql = "INSERT INTO students
+                // Insert the student using a prepared statement.
+                $stmt = $conn->prepare(
+                    "INSERT INTO students
                     (name, email, password, mobile, course, year, gender)
-                    VALUES
-                    (:name, :email, :password, :mobile, :course, :year, :gender)";
+                    VALUES (?, ?, ?, ?, ?, ?, ?)"
+                );
 
-                $stmt = $pdo->prepare($sql);
-                
-                $stmt->execute([
-                    "name" => $name,
-                    "email" => $email,
-                    "password" => $hashedPassword,
-                    "mobile" => $mobile,
-                    "course" => $course,
-                    "year" => (int) $year,
-                    "gender" => $gender
-                ]);
+                $yearValue = (int) $year;
+                $stmt->bind_param(
+                    "sssssis",
+                    $name,
+                    $email,
+                    $hashedPassword,
+                    $mobile,
+                    $course,
+                    $yearValue,
+                    $gender
+                );
 
-                // Display success only after execute() succeeds.
-                $studentId = $pdo->lastInsertId();
+                $stmt->execute();
 
-                if ($stmt->rowCount() === 1 && $studentId !== "0") {
+                if ($stmt->affected_rows === 1) {
+                    $studentId = (string) $conn->insert_id;
                     $message = "Registration successful! Student ID: "
-                        . htmlspecialchars($studentId, ENT_QUOTES, "UTF-8");
+                        . htmlspecialchars(
+                            $studentId,
+                            ENT_QUOTES,
+                            "UTF-8"
+                        );
                     $messageType = "success";
                 } else {
                     $message = "Registration could not be confirmed. Please check the student records.";
                     $messageType = "error";
                 }
+
+                $stmt->close();
             }
 
-        } catch (PDOException $e) {
-            // Record technical details in the PHP error log.
+        } catch (mysqli_sql_exception $e) {
             error_log("StudentHub registration error: " . $e->getMessage());
 
-            // MySQL error 1062 means a duplicate unique value.
-            if (
-                isset($e->errorInfo[1]) &&
-                (int) $e->errorInfo[1] === 1062
-            ) {
+            if ((int) $e->getCode() === 1062) {
                 $message = "This email is already registered.";
             } else {
                 $message = "Registration failed because of a database error. Please try again.";
@@ -111,6 +118,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
