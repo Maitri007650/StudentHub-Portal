@@ -384,27 +384,22 @@ if (form) {
 
 
     form.addEventListener("submit", function (event) {
+    const valid =
+        checkName() &&
+        checkEmail() &&
+        checkMobile() &&
+        checkPassword() &&
+        checkConfirmPassword() &&
+        checkCourse() &&
+        checkYear() &&
+        checkGender() &&
+        checkTerms();
 
+    if (!valid) {
         event.preventDefault();
-
-        const valid =
-            checkName() &&
-            checkEmail() &&
-            checkMobile() &&
-            checkPassword() &&
-            checkConfirmPassword() &&
-            checkCourse() &&
-            checkYear() &&
-            checkGender() &&
-            checkTerms();
-
-        if (valid) {
-            successMessage.textContent = "Registration successful.";
-        } else {
-            successMessage.textContent = "";
-        }
-
-    });
+        successMessage.textContent = "";
+    }
+});
 
 
     form.addEventListener("reset", function () {
