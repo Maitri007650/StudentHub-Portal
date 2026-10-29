@@ -51,6 +51,8 @@ $stmt->close();
     <header>
         <h1>Admin Dashboard</h1>
         <p>Welcome, <?= htmlspecialchars($admin["name"] ?? "Admin", ENT_QUOTES, "UTF-8") ?>!</p>
+        
+        <a href="manage_students.php" class="btn">Student Management</a>
 
         <div class="logout-container">
             <a href="logout.php" class="logout-btn">Logout</a>
