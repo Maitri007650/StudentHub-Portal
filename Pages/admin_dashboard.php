@@ -53,7 +53,7 @@ $stmt->close();
         <p>Welcome, <?= htmlspecialchars($admin["name"] ?? "Admin", ENT_QUOTES, "UTF-8") ?>!</p>
         
         <a href="manage_students.php" class="btn">Student Management</a>
-
+        <a href="manage_events.php" class="btn">Event Management</a>
         <div class="logout-container">
             <a href="logout.php" class="logout-btn">Logout</a>
         </div>
