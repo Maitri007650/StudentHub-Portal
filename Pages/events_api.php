@@ -11,13 +11,29 @@ function sendResponse($status, $data)
     exit;
 }
 
+function logAdminAction($conn, $admin_id, $action, $details)
+{
+    $stmt = $conn->prepare(
+        "INSERT INTO audit_logs (admin_id, action, details)
+         VALUES (?, ?, ?)"
+    );
+
+    $stmt->bind_param("iss", $admin_id, $action, $details);
+    $stmt->execute();
+    $stmt->close();
+}
+
 if (
     isset($_SESSION["last_activity"]) &&
     time() - $_SESSION["last_activity"] > 900
 ) {
     $_SESSION = [];
     session_destroy();
-    sendResponse(401, ["success" => false, "message" => "Session expired. Please log in again."]);
+
+    sendResponse(401, [
+        "success" => false,
+        "message" => "Session expired. Please log in again."
+    ]);
 }
 
 require_once __DIR__ . "/../config/db.php";
@@ -40,6 +56,7 @@ try {
 
     if ($method !== "POST") {
         header("Allow: GET, POST");
+
         sendResponse(405, [
             "success" => false,
             "message" => "Method not allowed."
@@ -90,6 +107,7 @@ try {
 
     $action = $input["action"] ?? "";
     $id = filter_var($input["event_id"] ?? null, FILTER_VALIDATE_INT);
+    $admin_id = $_SESSION["admin_id"];
 
     if ($action === "add" || $action === "update") {
         $title = trim($input["title"] ?? "");
@@ -114,13 +132,29 @@ try {
 
         if ($action === "add") {
             $stmt = $conn->prepare(
-                "INSERT INTO events (title, description, event_date, location)
+                "INSERT INTO events
+                 (title, description, event_date, location)
                  VALUES (?, ?, ?, ?)"
             );
-            $stmt->bind_param("ssss", $title, $description, $date, $location);
+
+            $stmt->bind_param(
+                "ssss",
+                $title,
+                $description,
+                $date,
+                $location
+            );
+
             $stmt->execute();
             $newId = $conn->insert_id;
             $stmt->close();
+
+            logAdminAction(
+                $conn,
+                $admin_id,
+                "Added Event",
+                "Added event ID: " . $newId
+            );
 
             sendResponse(201, [
                 "success" => true,
@@ -141,12 +175,23 @@ try {
              SET title = ?, description = ?, event_date = ?, location = ?
              WHERE event_id = ?"
         );
-        $stmt->bind_param("ssssi", $title, $description, $date, $location, $id);
+
+        $stmt->bind_param(
+            "ssssi",
+            $title,
+            $description,
+            $date,
+            $location,
+            $id
+        );
+
         $stmt->execute();
-        $updated = $stmt->affected_rows;
         $stmt->close();
 
-        $stmt = $conn->prepare("SELECT event_id FROM events WHERE event_id = ?");
+        $stmt = $conn->prepare(
+            "SELECT event_id FROM events WHERE event_id = ?"
+        );
+
         $stmt->bind_param("i", $id);
         $stmt->execute();
         $exists = $stmt->get_result()->num_rows > 0;
@@ -158,6 +203,13 @@ try {
                 "message" => "Event not found."
             ]);
         }
+
+        logAdminAction(
+            $conn,
+            $admin_id,
+            "Updated Event",
+            "Updated event ID: " . $id
+        );
 
         sendResponse(200, [
             "success" => true,
@@ -173,7 +225,10 @@ try {
             ]);
         }
 
-        $stmt = $conn->prepare("DELETE FROM events WHERE event_id = ?");
+        $stmt = $conn->prepare(
+            "DELETE FROM events WHERE event_id = ?"
+        );
+
         $stmt->bind_param("i", $id);
         $stmt->execute();
         $deleted = $stmt->affected_rows;
@@ -185,6 +240,13 @@ try {
                 "message" => "Event not found."
             ]);
         }
+
+        logAdminAction(
+            $conn,
+            $admin_id,
+            "Deleted Event",
+            "Deleted event ID: " . $id
+        );
 
         sendResponse(200, [
             "success" => true,

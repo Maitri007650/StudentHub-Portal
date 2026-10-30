@@ -42,6 +42,18 @@ function escapeHtml($value)
     return htmlspecialchars((string)$value, ENT_QUOTES, "UTF-8");
 }
 
+function logAdminAction($conn, $admin_id, $action, $details)
+{
+    $stmt = $conn->prepare(
+        "INSERT INTO audit_logs (admin_id, action, details)
+         VALUES (?, ?, ?)"
+    );
+
+    $stmt->bind_param("iss", $admin_id, $action, $details);
+    $stmt->execute();
+    $stmt->close();
+}
+
 function uploadPoster($uploadDir)
 {
     if (
@@ -74,9 +86,11 @@ function uploadPoster($uploadDir)
         return [null, "Only JPG, PNG and WEBP images are allowed."];
     }
 
-    if (!is_dir($uploadDir) &&
+    if (
+        !is_dir($uploadDir) &&
         !mkdir($uploadDir, 0755, true) &&
-        !is_dir($uploadDir)) {
+        !is_dir($uploadDir)
+    ) {
         return [null, "Unable to create the poster upload folder."];
     }
 
@@ -112,6 +126,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $messageType = "error";
     } else {
         $action = $_POST["action"] ?? "";
+        $admin_id = $_SESSION["admin_id"];
 
         try {
             if ($action === "add" || $action === "update") {
@@ -158,13 +173,23 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     );
 
                     $stmt->execute();
+                    $newEventId = $conn->insert_id;
                     $stmt->close();
 
+                    logAdminAction(
+                        $conn,
+                        $admin_id,
+                        "Added Event",
+                        "Added event ID: " . $newEventId
+                    );
+
                     $message = "Event added successfully.";
+
                 } else {
                     $stmt = $conn->prepare(
                         "SELECT poster FROM events WHERE event_id = ?"
                     );
+
                     $stmt->bind_param("i", $id);
                     $stmt->execute();
                     $existing = $stmt->get_result()->fetch_assoc();
@@ -174,6 +199,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         if ($newPoster) {
                             removePoster($newPoster, $uploadDir);
                         }
+
                         throw new RuntimeException("Event not found.");
                     }
 
@@ -203,14 +229,23 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         removePoster($existing["poster"], $uploadDir);
                     }
 
+                    logAdminAction(
+                        $conn,
+                        $admin_id,
+                        "Updated Event",
+                        "Updated event ID: " . $id
+                    );
+
                     $message = "Event updated successfully.";
                 }
+
             } elseif ($action === "delete") {
                 $id = (int)($_POST["event_id"] ?? 0);
 
                 $stmt = $conn->prepare(
                     "SELECT poster FROM events WHERE event_id = ?"
                 );
+
                 $stmt->bind_param("i", $id);
                 $stmt->execute();
                 $event = $stmt->get_result()->fetch_assoc();
@@ -223,21 +258,39 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $stmt = $conn->prepare(
                     "DELETE FROM events WHERE event_id = ?"
                 );
+
                 $stmt->bind_param("i", $id);
                 $stmt->execute();
+                $deleted = $stmt->affected_rows;
                 $stmt->close();
 
-                removePoster($event["poster"], $uploadDir);
-                $message = "Event deleted successfully.";
+                if ($deleted === 1) {
+                    removePoster($event["poster"], $uploadDir);
+
+                    logAdminAction(
+                        $conn,
+                        $admin_id,
+                        "Deleted Event",
+                        "Deleted event ID: " . $id
+                    );
+
+                    $message = "Event deleted successfully.";
+                } else {
+                    throw new RuntimeException("Event could not be deleted.");
+                }
+
             } else {
                 throw new RuntimeException("Invalid action.");
             }
+
         } catch (Throwable $e) {
             $message = $e instanceof RuntimeException
                 ? $e->getMessage()
                 : "An error occurred while saving the event.";
 
             $messageType = "error";
+
+            error_log("Event management error: " . $e->getMessage());
         }
     }
 }
@@ -250,6 +303,7 @@ if (isset($_GET["edit"])) {
     $stmt = $conn->prepare(
         "SELECT * FROM events WHERE event_id = ?"
     );
+
     $stmt->bind_param("i", $id);
     $stmt->execute();
     $editEvent = $stmt->get_result()->fetch_assoc();
@@ -264,16 +318,21 @@ if (isset($_GET["edit"])) {
 $result = $conn->query(
     "SELECT * FROM events ORDER BY event_date ASC, event_id DESC"
 );
+
 $events = $result->fetch_all(MYSQLI_ASSOC);
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Event Management - StudentHub</title>
+
     <link rel="stylesheet" href="../css/style.css">
+
     <style>
         .event-container {
             max-width: 1100px;
@@ -338,11 +397,13 @@ $events = $result->fetch_all(MYSQLI_ASSOC);
         }
     </style>
 </head>
+
 <body>
 
 <header>
     <h1>Event Management</h1>
     <p>Add, view, update and delete college events.</p>
+
     <a href="admin_dashboard.php" class="btn">Back to Dashboard</a>
     <a href="logout.php" class="logout-btn">Logout</a>
 </header>
@@ -359,6 +420,7 @@ $events = $result->fetch_all(MYSQLI_ASSOC);
         <h2><?= $editEvent ? "Update Event" : "Add New Event" ?></h2>
 
         <form class="event-form" method="POST" enctype="multipart/form-data">
+
             <input type="hidden" name="csrf_token"
                    value="<?= escapeHtml($_SESSION["event_csrf"]) ?>">
 
@@ -371,28 +433,40 @@ $events = $result->fetch_all(MYSQLI_ASSOC);
             <?php endif; ?>
 
             <label for="title">Event Title</label>
+
             <input id="title" name="title" type="text" maxlength="150"
-                   required value="<?= escapeHtml($editEvent["title"] ?? "") ?>">
+                   required
+                   value="<?= escapeHtml($editEvent["title"] ?? "") ?>">
 
             <label for="description">Description</label>
+
             <textarea id="description" name="description" rows="3"><?= escapeHtml($editEvent["description"] ?? "") ?></textarea>
 
             <label for="event_date">Event Date</label>
+
             <input id="event_date" name="event_date" type="date" required
                    value="<?= escapeHtml($editEvent["event_date"] ?? "") ?>">
 
             <label for="location">Location</label>
+
             <input id="location" name="location" type="text" maxlength="150"
                    value="<?= escapeHtml($editEvent["location"] ?? "") ?>">
 
-            <label for="poster">Poster (JPG, PNG or WEBP; maximum 2 MB)</label>
+            <label for="poster">
+                Poster (JPG, PNG or WEBP; maximum 2 MB)
+            </label>
+
             <input id="poster" name="poster" type="file"
                    accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp">
 
             <?php if (!empty($editEvent["poster"])): ?>
                 <p>Current poster:</p>
-                <img src="<?= $uploadUrl . rawurlencode(basename($editEvent["poster"])) ?>"
-                     alt="Current event poster" width="120">
+
+                <img
+                    src="<?= $uploadUrl . rawurlencode(basename($editEvent["poster"])) ?>"
+                    alt="Current event poster"
+                    width="120">
+
                 <p>Leave the upload field empty to keep the current poster.</p>
             <?php endif; ?>
 
@@ -403,6 +477,7 @@ $events = $result->fetch_all(MYSQLI_ASSOC);
             <?php if ($editEvent): ?>
                 <a href="manage_events.php">Cancel Edit</a>
             <?php endif; ?>
+
         </form>
     </section>
 
@@ -410,6 +485,7 @@ $events = $result->fetch_all(MYSQLI_ASSOC);
         <h2>Existing Events (<?= count($events) ?>)</h2>
 
         <table class="event-table">
+
             <thead>
                 <tr>
                     <th>ID</th>
@@ -420,43 +496,68 @@ $events = $result->fetch_all(MYSQLI_ASSOC);
                     <th>Actions</th>
                 </tr>
             </thead>
+
             <tbody>
+
             <?php if (!$events): ?>
-                <tr><td colspan="6">No events found.</td></tr>
+
+                <tr>
+                    <td colspan="6">No events found.</td>
+                </tr>
+
             <?php else: ?>
+
                 <?php foreach ($events as $event): ?>
+
                     <tr>
                         <td><?= (int)$event["event_id"] ?></td>
+
                         <td><?= escapeHtml($event["title"]) ?></td>
+
                         <td><?= escapeHtml($event["event_date"]) ?></td>
+
                         <td><?= escapeHtml($event["location"]) ?></td>
+
                         <td>
                             <?php if (!empty($event["poster"])): ?>
+
                                 <img
                                     src="<?= $uploadUrl . rawurlencode(basename($event["poster"])) ?>"
                                     alt="Event poster">
+
                             <?php else: ?>
+
                                 No poster
+
                             <?php endif; ?>
                         </td>
+
                         <td>
                             <a href="manage_events.php?edit=<?= (int)$event["event_id"] ?>">
                                 Edit
                             </a>
 
                             <form method="POST" action="manage_events.php"
-                                onsubmit="return confirm('Delete this event?');">
+                                  onsubmit="return confirm('Delete this event?');">
+
                                 <input type="hidden" name="csrf_token"
                                        value="<?= escapeHtml($_SESSION["event_csrf"]) ?>">
+
                                 <input type="hidden" name="action" value="delete">
+
                                 <input type="hidden" name="event_id"
                                        value="<?= (int)$event["event_id"] ?>">
+
                                 <button type="submit">Delete</button>
+
                             </form>
                         </td>
                     </tr>
+
                 <?php endforeach; ?>
+
             <?php endif; ?>
+
             </tbody>
         </table>
     </section>
@@ -472,12 +573,16 @@ $events = $result->fetch_all(MYSQLI_ASSOC);
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
+
     const eventForms = document.querySelectorAll(".event-form");
 
     eventForms.forEach(function (form) {
+
         form.addEventListener("submit", async function (e) {
+
             // Keep normal submission for poster uploads.
             const posterInput = form.querySelector('input[type="file"]');
+
             if (posterInput && posterInput.files.length > 0) {
                 return;
             }
@@ -498,7 +603,10 @@ document.addEventListener("DOMContentLoaded", function () {
             );
 
             status.textContent = "Saving event...";
-            if (submitButton) submitButton.disabled = true;
+
+            if (submitButton) {
+                submitButton.disabled = true;
+            }
 
             try {
                 const formData = new FormData(form);
@@ -515,25 +623,33 @@ document.addEventListener("DOMContentLoaded", function () {
                 const result = await response.json();
 
                 if (!response.ok || !result.success) {
-                    throw new Error(result.message || "Unable to save event.");
+                    throw new Error(
+                        result.message || "Unable to save event."
+                    );
                 }
 
-                status.textContent = result.message || "Event saved successfully.";
+                status.textContent =
+                    result.message || "Event saved successfully.";
 
-                
                 // Refresh the table without reloading the whole page.
                 const pageResponse = await fetch("manage_events.php");
                 const pageHtml = await pageResponse.text();
 
                 const parser = new DOMParser();
-                const newPage = parser.parseFromString(pageHtml, "text/html");
+                const newPage = parser.parseFromString(
+                    pageHtml,
+                    "text/html"
+                );
 
                 const currentTable = document.querySelector("table");
                 const updatedTable = newPage.querySelector("table");
 
                 if (currentTable && updatedTable) {
-                    const currentBody = currentTable.querySelector("tbody");
-                    const updatedBody = updatedTable.querySelector("tbody");
+                    const currentBody =
+                        currentTable.querySelector("tbody");
+
+                    const updatedBody =
+                        updatedTable.querySelector("tbody");
 
                     if (currentBody && updatedBody) {
                         currentBody.innerHTML = updatedBody.innerHTML;
@@ -543,10 +659,17 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (data.action === "add") {
                     form.reset();
                 }
+
             } catch (error) {
+
                 status.textContent = error.message;
+
             } finally {
-                if (submitButton) submitButton.disabled = false;
+
+                if (submitButton) {
+                    submitButton.disabled = false;
+                }
+
             }
         });
     });
