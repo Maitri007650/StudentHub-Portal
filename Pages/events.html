@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -17,13 +18,11 @@
         <p>Explore upcoming student and college events.</p>
     </header>
 
-
     <button id="menuToggle" type="button" aria-expanded="false">
         ☰ Menu
     </button>
 
     <nav>
-
         <a href="home.html">Home</a>
         <a href="about.html">About</a>
         <a href="register.html">Register</a>
@@ -37,76 +36,70 @@
         <a href="timetable.html">Timetable</a>
 
         <button id="themeToggle" type="button">Dark Mode</button>
-
     </nav>
 
-
     <main>
-
         <section>
 
             <h2>Upcoming Events</h2>
 
             <label for="eventSearch">Search Events:</label>
-        <input type="text" id="eventSearch" placeholder="Search events">
+            <input type="text" id="eventSearch" placeholder="Search events">
 
-        <label for="eventFilter">Filter by Category:</label>
-        <select id="eventFilter">
-            <option value="All">All Categories</option>
-            <option value="Academic">Academic</option>
-            <option value="Technology">Technology</option>
-            <option value="Sports">Sports</option>
-            <option value="Cultural">Cultural</option>
-        </select>
+            <label for="eventFilter">Filter by Category:</label>
+            <select id="eventFilter">
+                <option value="All">All Categories</option>
+                <option value="Academic">Academic</option>
+                <option value="Technology">Technology</option>
+                <option value="Sports">Sports</option>
+                <option value="Cultural">Cultural</option>
+            </select>
 
-        <label for="eventSort">Sort Events:</label>
-        <select id="eventSort">
-            <option value="date">Date</option>
-            <option value="name">Event Name</option>
-        </select>
+            <label for="eventSort">Sort Events:</label>
+            <select id="eventSort">
+                <option value="date">Date</option>
+                <option value="name">Event Name</option>
+            </select>
 
-        <p id="eventLoading">Loading events...</p>
-        <p id="eventError"></p>
+            <p id="eventLoading">Loading events...</p>
+            <p id="eventError"></p>
 
-        <table>
+            <table>
+                <caption>Upcoming College Events</caption>
 
-            <caption>Upcoming College Events</caption>
+                <thead>
+                    <tr>
+                        <th>Event</th>
+                        <th>Description</th>
+                        <th>Date</th>
+                        <th>Location / Destination</th>
+                    </tr>
+                </thead>
 
-            <thead>
-                <tr>
-                    <th>Event</th>
-                    <th>Date</th>
-                    <th>Category</th>
-                </tr>
-            </thead>
+                <tbody id="eventsTableBody">
+                </tbody>
+            </table>
 
-            <tbody id="eventsTableBody">
-            </tbody>
+            <div id="eventPagination">
+                <button id="previousPage" type="button">
+                    Previous
+                </button>
 
-        </table>
+                <span id="pageNumber">Page 1</span>
 
-        <div id="eventPagination">
-
-            <button id="previousPage" type="button">
-                Previous
-            </button>
-
-            <span id="pageNumber">Page 1</span>
-
-            <button id="nextPage" type="button">
-                Next
-            </button>
-
-        </div>
+                <button id="nextPage" type="button">
+                    Next
+                </button>
+            </div>
 
         </section>
-
     </main>
 
     <footer>
         <p>&copy; 2026 StudentHub Portal. All rights reserved.</p>
     </footer>
-    <script src="../js/script.js"></script>
-</body>
 
+    <script src="../js/script.js"></script>
+
+</body>
 </html>

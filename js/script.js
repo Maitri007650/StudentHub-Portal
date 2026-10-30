@@ -426,14 +426,11 @@ if (form) {
 const eventsTableBody = document.getElementById("eventsTableBody");
 
 if (eventsTableBody) {
-
     const searchInput = document.getElementById("eventSearch");
     const filterSelect = document.getElementById("eventFilter");
     const sortSelect = document.getElementById("eventSort");
-
     const loadingMessage = document.getElementById("eventLoading");
     const errorMessage = document.getElementById("eventError");
-
     const previousPage = document.getElementById("previousPage");
     const nextPage = document.getElementById("nextPage");
     const pageNumber = document.getElementById("pageNumber");
@@ -442,147 +439,165 @@ if (eventsTableBody) {
     let currentPage = 1;
     const eventsPerPage = 5;
 
-    fetch("../data/events.json")
-        .then(function (response) {
+    function loadEvents() {
+        loadingMessage.textContent = "Loading events...";
+        errorMessage.textContent = "";
 
-            if (!response.ok) {
-                throw new Error("Unable to load events.");
-            }
+        fetch("events_api.php")
+            .then(function (response) {
+                if (!response.ok) {
+                    throw new Error("Unable to load events.");
+                }
+                return response.json();
+            })
+            .then(function (data) {
+                if (!data.success || !Array.isArray(data.events)) {
+                    throw new Error("Invalid event data received.");
+                }
 
-            return response.json();
-
-        })
-        .then(function (data) {
-
-            events = data;
-
-            loadingMessage.textContent = "";
-
-            displayEvents();
-
-        })
-        .catch(function (error) {
-
-            loadingMessage.textContent = "";
-            errorMessage.textContent = "Error loading events.";
-
-            console.log(error);
-
-        });
-
+                events = data.events;
+                loadingMessage.textContent = "";
+                displayEvents();
+            })
+            .catch(function (error) {
+                loadingMessage.textContent = "";
+                errorMessage.textContent = "Error loading events.";
+                console.error(error);
+            });
+    }
 
     function displayEvents() {
+        let result = events.slice();
 
-        let result = events;
-
-        const searchText = searchInput.value.toLowerCase();
-        const category = filterSelect.value;
-        const sortType = sortSelect.value;
-
+        const searchText = searchInput ? searchInput.value.toLowerCase().trim() : "";
+        const category = filterSelect ? filterSelect.value : "All";
+        const sortType = sortSelect ? sortSelect.value : "";
 
         result = result.filter(function (event) {
-
-            return event.event.toLowerCase().includes(searchText);
-
+            return String(event.title || "").toLowerCase().includes(searchText);
         });
 
-
         result = result.filter(function (event) {
-
             if (category === "All") {
                 return true;
             }
-
-            return event.category === category;
-
+            return event.location === category;
         });
 
+        if (sortType === "dateAsc") {
+            result.sort(function (a, b) {
+                return a.event_date.localeCompare(b.event_date);
+            });
+        } else if (sortType === "dateDesc") {
+            result.sort(function (a, b) {
+                return b.event_date.localeCompare(a.event_date);
+            });
+        } else if (sortType === "nameAsc") {
+            result.sort(function (a, b) {
+                return a.title.localeCompare(b.title);
+            });
+        }
 
-        result.sort(function (a, b) {
+        const totalPages = Math.max(1, Math.ceil(result.length / eventsPerPage));
 
-            if (sortType === "name") {
-                return a.event.localeCompare(b.event);
-            }
+        if (currentPage > totalPages) {
+            currentPage = totalPages;
+        }
 
-            return new Date(a.date) - new Date(b.date);
-
-        });
-
-
-        const start = (currentPage - 1) * eventsPerPage;
-        const end = start + eventsPerPage;
-
-        const pageEvents = result.slice(start, end);
-
+        const startIndex = (currentPage - 1) * eventsPerPage;
+        const pageEvents = result.slice(startIndex, startIndex + eventsPerPage);
 
         eventsTableBody.innerHTML = "";
 
+        if (pageEvents.length === 0) {
+            eventsTableBody.innerHTML =
+                '<tr><td colspan="5">No events found.</td></tr>';
+        } else {
+            pageEvents.forEach(function (event) {
+                const row = document.createElement("tr");
 
-        pageEvents.forEach(function (event) {
+                const values = [
+                    event.title,
+                    event.description || "",
+                    event.event_date,
+                    event.location || ""
+                ];
 
-            const row = document.createElement("tr");
+                values.forEach(function (value) {
+                    const cell = document.createElement("td");
+                    cell.textContent = value;
+                    row.appendChild(cell);
+                });
 
-            row.innerHTML =
-                "<td>" + event.event + "</td>" +
-                "<td>" + event.date + "</td>" +
-                "<td>" + event.category + "</td>";
-
-            eventsTableBody.appendChild(row);
-
-        });
-
-
-        pageNumber.textContent = "Page " + currentPage;
-
-        previousPage.disabled = currentPage === 1;
-
-        nextPage.disabled = end >= result.length;
-
-    }
-
-
-    searchInput.addEventListener("input", function () {
-
-        currentPage = 1;
-        displayEvents();
-
-    });
-
-
-    filterSelect.addEventListener("change", function () {
-
-        currentPage = 1;
-        displayEvents();
-
-    });
-
-
-    sortSelect.addEventListener("change", function () {
-
-        currentPage = 1;
-        displayEvents();
-
-    });
-
-
-    previousPage.addEventListener("click", function () {
-
-        if (currentPage > 1) {
-            currentPage--;
-            displayEvents();
+                eventsTableBody.appendChild(row);
+            });
         }
 
-    });
+        if (pageNumber) {
+            pageNumber.textContent = currentPage + " / " + totalPages;
+        }
 
+        if (previousPage) {
+            previousPage.disabled = currentPage === 1;
+        }
 
-    nextPage.addEventListener("click", function () {
+        if (nextPage) {
+            nextPage.disabled = currentPage >= totalPages;
+        }
+    }
 
-        currentPage++;
-        displayEvents();
+    if (searchInput) {
+        searchInput.addEventListener("input", function () {
+            currentPage = 1;
+            displayEvents();
+        });
+    }
 
-    });
+    if (filterSelect) {
+        filterSelect.addEventListener("change", function () {
+            currentPage = 1;
+            displayEvents();
+        });
+    }
 
+    if (sortSelect) {
+        sortSelect.addEventListener("change", function () {
+            currentPage = 1;
+            displayEvents();
+        });
+    }
+
+    if (previousPage) {
+        previousPage.addEventListener("click", function () {
+            if (currentPage > 1) {
+                currentPage--;
+                displayEvents();
+            }
+        });
+    }
+
+    if (nextPage) {
+        nextPage.addEventListener("click", function () {
+            const searchText = searchInput ? searchInput.value.toLowerCase().trim() : "";
+            const category = filterSelect ? filterSelect.value : "All";
+
+            let filteredEvents = events.filter(function (event) {
+                return String(event.title || "").toLowerCase().includes(searchText) &&
+                    (category === "All" || event.location === category);
+            });
+
+            const totalPages = Math.max(1, Math.ceil(filteredEvents.length / eventsPerPage));
+
+            if (currentPage < totalPages) {
+                currentPage++;
+                displayEvents();
+            }
+        });
+    }
+
+    loadEvents();
 }
+
 
 // FAQ JSON
 

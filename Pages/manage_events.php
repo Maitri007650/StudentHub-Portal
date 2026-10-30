@@ -469,3 +469,86 @@ $events = $result->fetch_all(MYSQLI_ASSOC);
 
 </body>
 </html>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const eventForms = document.querySelectorAll(".event-form");
+
+    eventForms.forEach(function (form) {
+        form.addEventListener("submit", async function (e) {
+            // Keep normal submission for poster uploads.
+            const posterInput = form.querySelector('input[type="file"]');
+            if (posterInput && posterInput.files.length > 0) {
+                return;
+            }
+
+            e.preventDefault();
+
+            let status = form.querySelector(".ajax-status");
+
+            if (!status) {
+                status = document.createElement("p");
+                status.className = "ajax-status";
+                status.setAttribute("role", "status");
+                form.appendChild(status);
+            }
+
+            const submitButton = form.querySelector(
+                'button[type="submit"], input[type="submit"]'
+            );
+
+            status.textContent = "Saving event...";
+            if (submitButton) submitButton.disabled = true;
+
+            try {
+                const formData = new FormData(form);
+                const data = Object.fromEntries(formData.entries());
+
+                const response = await fetch("events_api.php", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (!response.ok || !result.success) {
+                    throw new Error(result.message || "Unable to save event.");
+                }
+
+                status.textContent = result.message || "Event saved successfully.";
+
+                
+                // Refresh the table without reloading the whole page.
+                const pageResponse = await fetch("manage_events.php");
+                const pageHtml = await pageResponse.text();
+
+                const parser = new DOMParser();
+                const newPage = parser.parseFromString(pageHtml, "text/html");
+
+                const currentTable = document.querySelector("table");
+                const updatedTable = newPage.querySelector("table");
+
+                if (currentTable && updatedTable) {
+                    const currentBody = currentTable.querySelector("tbody");
+                    const updatedBody = updatedTable.querySelector("tbody");
+
+                    if (currentBody && updatedBody) {
+                        currentBody.innerHTML = updatedBody.innerHTML;
+                    }
+                }
+
+                if (data.action === "add") {
+                    form.reset();
+                }
+            } catch (error) {
+                status.textContent = error.message;
+            } finally {
+                if (submitButton) submitButton.disabled = false;
+            }
+        });
+    });
+});
+</script>
