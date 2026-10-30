@@ -648,3 +648,107 @@ span {
 .btn:hover {
     background-color: #1d4ed8;
 }
+
+
+/* Accessibility improvements */
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+    outline: 3px solid royalblue;
+    outline-offset: 3px;
+}
+
+#notificationBanner[hidden],
+#welcomeModal[aria-hidden="true"] {
+    display: none;
+}
+
+.faq-question[aria-expanded="true"] {
+    border-color: navy;
+}
+
+/* Home page action buttons */
+
+.home-button {
+    display: inline-block;
+    padding: 12px 22px;
+    margin: 8px;
+    background-color: #2457a6;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: bold;
+}
+
+.home-button:hover {
+    background-color: #183e78;
+    color: white;
+}
+
+/* StudentHub Highlights */
+
+.slider {
+    padding: 25px;
+    margin: 25px 0;
+    text-align: center;
+    background-color: #f2f5fa;
+    border-radius: 10px;
+}
+
+.slide {
+    padding: 20px;
+    margin: 15px auto;
+    max-width: 600px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.slider button {
+    padding: 10px 18px;
+    margin: 8px;
+    cursor: pointer;
+}
+
+/* Welcome modal */
+
+#welcomeModal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+#welcomeModal[aria-hidden="true"] {
+    display: none;
+}
+
+.modal-content {
+    background-color: white;
+    color: #222;
+    padding: 25px;
+    border-radius: 10px;
+    max-width: 450px;
+    width: 100%;
+}
+
+.modal-content button {
+    float: right;
+}

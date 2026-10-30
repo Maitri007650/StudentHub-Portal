@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -20,21 +21,11 @@
         </p>
     </header>
 
-    <div id="notificationBanner">
-
-        Welcome to StudentHub Portal.
-
-        <button id="closeNotification" type="button">
-            Close
-        </button>
-
-    </div>
-
     <button id="menuToggle" type="button"
         aria-expanded="false"
         aria-controls="mainNav"
         aria-label="Open navigation menu">
-    ☰ Menu
+        ☰ Menu
     </button>
 
     <nav id="mainNav">
@@ -51,7 +42,7 @@
         <a href="faq.html">FAQ</a>
         <a href="timetable.html">Timetable</a>
 
-        <button id="themeToggle" type="button">
+        <button id="themeToggle" type="button" aria-pressed="false">
             Dark Mode
         </button>
 
@@ -59,6 +50,7 @@
 
     <main>
 
+        <!-- Introduction Section -->
         <section class="intro-section">
 
             <h2>Welcome to StudentHub</h2>
@@ -68,9 +60,13 @@
                 important academic information and services in one place.
             </p>
 
-            <a href="login.html">Login to StudentHub</a>
+            <a href="login.html" class="home-button">
+                Login to StudentHub
+            </a>
 
-            <a href="register.php">Create an Account</a>
+            <a href="register.php" class="home-button">
+                Create an Account
+            </a>
 
             <button id="openModal" type="button">
                 View Welcome Message
@@ -78,7 +74,7 @@
 
         </section>
 
-
+        <!-- Features Section -->
         <section class="features-section">
 
             <h2>Our Features</h2>
@@ -131,8 +127,8 @@
 
         </section>
 
-
-        <section class="slider">
+        <!-- StudentHub Highlights Slider -->
+        <section class="slider" aria-label="StudentHub highlights">
 
             <h2>StudentHub Highlights</h2>
 
@@ -157,17 +153,22 @@
                 </p>
             </article>
 
-            <button id="previousButton" type="button">
+            <p id="slideStatus" class="visually-hidden"
+                aria-live="polite"></p>
+
+            <button id="previousButton" type="button"
+                aria-label="Show previous slide">
                 Previous
             </button>
 
-            <button id="nextButton" type="button">
+            <button id="nextButton" type="button"
+                aria-label="Show next slide">
                 Next
             </button>
 
         </section>
 
-
+        <!-- About Section -->
         <section class="about-section">
 
             <h2>About StudentHub</h2>
@@ -185,16 +186,22 @@
 
     </main>
 
-
-    <div id="welcomeModal">
+    <!-- Welcome Modal -->
+    <div id="welcomeModal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modalTitle"
+        aria-hidden="true"
+        tabindex="-1">
 
         <div class="modal-content">
 
-            <button id="closeModal" type="button">
+            <button id="closeModal" type="button"
+                aria-label="Close welcome dialog">
                 Close
             </button>
 
-            <h2>Welcome to StudentHub</h2>
+            <h2 id="modalTitle">Welcome to StudentHub</h2>
 
             <p>
                 StudentHub Portal provides students with easy access
@@ -205,7 +212,7 @@
 
     </div>
 
-
+    <!-- Footer -->
     <footer>
 
         <p>
