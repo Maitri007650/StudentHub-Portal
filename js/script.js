@@ -22,17 +22,28 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     const menuToggle = document.getElementById("menuToggle");
-    const nav = document.querySelector("nav");
+const nav = document.getElementById("mainNav");
 
-    if (menuToggle) {
+if (menuToggle && nav) {
+    menuToggle.addEventListener("click", function () {
+        const isOpen = nav.classList.toggle("nav-open");
 
-        menuToggle.addEventListener("click", function () {
+        menuToggle.setAttribute("aria-expanded", isOpen);
+        menuToggle.setAttribute(
+            "aria-label",
+            isOpen ? "Close navigation menu" : "Open navigation menu"
+        );
+    });
 
-            nav.classList.toggle("nav-open");
-
-        });
-
-    }
+    document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape" && nav.classList.contains("nav-open")) {
+            nav.classList.remove("nav-open");
+            menuToggle.setAttribute("aria-expanded", "false");
+            menuToggle.setAttribute("aria-label", "Open navigation menu");
+            menuToggle.focus();
+        }
+    });
+}
 
     const themeToggle = document.getElementById("themeToggle");
 

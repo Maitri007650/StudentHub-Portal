@@ -136,11 +136,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <p>Create your StudentHub account.</p>
     </header>
 
-    <button id="menuToggle" type="button" aria-expanded="false">
-        ☰ Menu
+    <button id="menuToggle" type="button"
+        aria-expanded="false"
+        aria-controls="mainNav"
+        aria-label="Open navigation menu">
+    ☰ Menu
     </button>
 
-    <nav>
+    <nav id="mainNav">
         <a href="home.html">Home</a>
         <a href="about.html">About</a>
         <a href="register.php">Register</a>

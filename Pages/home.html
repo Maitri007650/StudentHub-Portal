@@ -30,11 +30,14 @@
 
     </div>
 
-    <button id="menuToggle" type="button">
-        ☰ Menu
+    <button id="menuToggle" type="button"
+        aria-expanded="false"
+        aria-controls="mainNav"
+        aria-label="Open navigation menu">
+    ☰ Menu
     </button>
 
-    <nav>
+    <nav id="mainNav">
 
         <a href="home.html">Home</a>
         <a href="about.html">About</a>
