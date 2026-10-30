@@ -31,7 +31,7 @@ require_once __DIR__ . "/auth.php";
 
         <a href="home.html">Home</a>
         <a href="about.html">About</a>
-        <a href="register.html">Register</a>
+        <a href="register.php">Register</a>
         <a href="login.html">Login</a>
         <a href="dashboard.html">Dashboard</a>
         <a href="events.html">Events</a>
