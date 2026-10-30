@@ -33,7 +33,7 @@
         <a href="dashboard.html">Dashboard</a>
         <a href="events.html">Events</a>
         <a href="profile.html">Profile</a>
-        <a href="contact.html">Contact</a>
+        <a href="contact.php">Contact</a>
         <a href="admin.html">Admin</a>
         <a href="faq.html">FAQ</a>
         <a href="timetable.html">Timetable</a>
@@ -49,19 +49,17 @@
             <label for="eventSearch">Search Events:</label>
             <input type="text" id="eventSearch" placeholder="Search events">
 
-            <label for="eventFilter">Filter by Category:</label>
+            <label for="eventFilter">Filter by Location / Category:</label>
             <select id="eventFilter">
-                <option value="All">All Categories</option>
-                <option value="Academic">Academic</option>
-                <option value="Technology">Technology</option>
-                <option value="Sports">Sports</option>
-                <option value="Cultural">Cultural</option>
+                <option value="All">All Locations / Categories</option>
             </select>
 
             <label for="eventSort">Sort Events:</label>
             <select id="eventSort">
-                <option value="date">Date</option>
-                <option value="name">Event Name</option>
+                <option value="">Default</option>
+                <option value="dateAsc">Date (Earliest First)</option>
+                <option value="dateDesc">Date (Latest First)</option>
+                <option value="nameAsc">Event Name (A-Z)</option>
             </select>
 
             <p id="eventLoading">Loading events...</p>

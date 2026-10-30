@@ -16,18 +16,19 @@ require_once __DIR__ . "/auth.php";
 <body>
     <header>
         <h1>Student Dashboard</h1>
-        <p>Welcome to your StudentHub dashboard.</p>
         <div class="logout-container">
-            <a href="logout.php" class="logout-btn">Logout</a>
+            <form action="logout.php" method="post" style="display:inline;">
+                <input type="hidden" name="csrf_token"
+                    value="<?= htmlspecialchars($_SESSION["logout_csrf"] ?? "", ENT_QUOTES, "UTF-8") ?>">
+                <button type="submit" class="logout-btn">Logout</button>
+            </form>
         </div>
     </header>
 
 
-    <button id="menuToggle" type="button"
-        aria-expanded="false"
-        aria-controls="mainNav"
+    <button id="menuToggle" type="button" aria-expanded="false" aria-controls="mainNav"
         aria-label="Open navigation menu">
-    ☰ Menu
+        ☰ Menu
     </button>
 
     <nav id="mainNav">
@@ -35,11 +36,11 @@ require_once __DIR__ . "/auth.php";
         <a href="home.html">Home</a>
         <a href="about.html">About</a>
         <a href="register.php">Register</a>
-        <a href="login.html">Login</a>
-        <a href="dashboard.html">Dashboard</a>
+        <a href="login.php">Login</a>
+        <a href="dashboard.php">Dashboard</a>
         <a href="events.html">Events</a>
-        <a href="profile.html">Profile</a>
-        <a href="contact.html">Contact</a>
+        <a href="profile.php">Profile</a>
+        <a href="contact.php">Contact</a>
         <a href="faq.html">FAQ</a>
         <a href="timetable.html">Timetable</a>
 

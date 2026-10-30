@@ -1,6 +1,13 @@
-
 <?php
-session_start();
+$isSecure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443);
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start([
+        'cookie_secure' => $isSecure,
+        'cookie_httponly' => true,
+        'cookie_samesite' => 'Lax'
+    ]);
+}
 
 $timeout = 900;
 
@@ -27,6 +34,10 @@ if (
 }
 
 $_SESSION["last_activity"] = time();
+
+if (empty($_SESSION["logout_csrf"])) {
+    $_SESSION["logout_csrf"] = bin2hex(random_bytes(32));
+}
 
 require_once __DIR__ . "/../config/db.php";
 
@@ -84,6 +95,21 @@ $logStmt->bind_param("iss", $admin_id, $action, $details);
 $logStmt->execute();
 $logStmt->close();
 
+// Fetch recent audit logs with administrator name (P14 / Item 3)
+$auditLogs = $conn->query(
+    "SELECT
+        audit_logs.log_id,
+        audit_logs.action,
+        audit_logs.details,
+        audit_logs.created_at,
+        admins.name AS admin_name
+     FROM audit_logs
+     INNER JOIN admins
+        ON audit_logs.admin_id = admins.admin_id
+     ORDER BY audit_logs.created_at DESC, audit_logs.log_id DESC
+     LIMIT 10"
+);
+
 // Dynamic menu based on role
 $menuItems = [];
 
@@ -97,97 +123,137 @@ if ($_SESSION["role"] === "admin") {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/style.css">
     <title>Admin Dashboard - StudentHub</title>
 </head>
+
 <body>
 
-<header>
-    <h1>Admin Dashboard</h1>
+    <header>
+        <h1>Admin Dashboard</h1>
 
-    <p>
-        Welcome,
-        <?= htmlspecialchars($admin["name"] ?? "Admin", ENT_QUOTES, "UTF-8") ?>!
-    </p>
+        <p>
+            Welcome,
+            <?= htmlspecialchars($admin["name"] ?? "Admin", ENT_QUOTES, "UTF-8") ?>!
+        </p>
 
-    <?php foreach ($menuItems as $link => $label): ?>
-        <a href="<?= htmlspecialchars($link, ENT_QUOTES, "UTF-8") ?>"
-           class="btn">
-            <?= htmlspecialchars($label, ENT_QUOTES, "UTF-8") ?>
-        </a>
-    <?php endforeach; ?>
+        <?php foreach ($menuItems as $link => $label): ?>
+            <a href="<?= htmlspecialchars($link, ENT_QUOTES, "UTF-8") ?>" class="btn">
+                <?= htmlspecialchars($label, ENT_QUOTES, "UTF-8") ?>
+            </a>
+        <?php endforeach; ?>
 
-    <div class="logout-container">
-        <a href="logout.php" class="logout-btn">Logout</a>
-    </div>
-</header>
-
-<main>
-    <section>
-        <h2>Administrator Panel</h2>
-        <p>You are logged in with administrator access.</p>
-    </section>
-
-    <section>
-        <h2>Dashboard Statistics</h2>
-
-        <div class="dashboard-stats">
-            <div class="stat-card">
-                <h3>Total Users</h3>
-                <p><?= $totalUsers ?></p>
-            </div>
-
-            <div class="stat-card">
-                <h3>Total Students</h3>
-                <p><?= $totalStudents ?></p>
-            </div>
-
-            <div class="stat-card">
-                <h3>Total Events</h3>
-                <p><?= $totalEvents ?></p>
-            </div>
+        <div class="logout-container">
+            <form action="logout.php" method="post" style="display:inline;">
+                <input type="hidden" name="csrf_token"
+                    value="<?= htmlspecialchars($_SESSION["logout_csrf"] ?? "", ENT_QUOTES, "UTF-8") ?>">
+                <button type="submit" class="logout-btn">Logout</button>
+            </form>
         </div>
-    </section>
+    </header>
 
-    <section>
-        <h2>Latest Registrations</h2>
+    <main>
+        <section>
+            <h2>Administrator Panel</h2>
+            <p>You are logged in with administrator access.</p>
+        </section>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Registration ID</th>
-                    <th>Student Name</th>
-                    <th>Event Name</th>
-                    <th>Registration Date</th>
-                </tr>
-            </thead>
+        <section>
+            <h2>Dashboard Statistics</h2>
 
-            <tbody>
-                <?php if ($latestRegistrations->num_rows > 0): ?>
-                    <?php while ($row = $latestRegistrations->fetch_assoc()): ?>
-                        <tr>
-                            <td><?= htmlspecialchars($row["registration_id"]) ?></td>
-                            <td><?= htmlspecialchars($row["student_name"]) ?></td>
-                            <td><?= htmlspecialchars($row["event_title"]) ?></td>
-                            <td><?= htmlspecialchars($row["registration_date"]) ?></td>
-                        </tr>
-                    <?php endwhile; ?>
-                <?php else: ?>
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <h3>Total Users</h3>
+                    <p><?= $totalUsers ?></p>
+                </div>
+
+                <div class="stat-card">
+                    <h3>Total Students</h3>
+                    <p><?= $totalStudents ?></p>
+                </div>
+
+                <div class="stat-card">
+                    <h3>Total Events</h3>
+                    <p><?= $totalEvents ?></p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Latest Registrations</h2>
+
+            <table>
+                <thead>
                     <tr>
-                        <td colspan="4">No registrations found.</td>
+                        <th>Registration ID</th>
+                        <th>Student Name</th>
+                        <th>Event Name</th>
+                        <th>Registration Date</th>
                     </tr>
-                <?php endif; ?>
-            </tbody>
-        </table>
-    </section>
-</main>
+                </thead>
 
-<footer>
-    <p>&copy; 2026 StudentHub Portal. All rights reserved.</p>
-</footer>
+                <tbody>
+                    <?php if ($latestRegistrations->num_rows > 0): ?>
+                        <?php while ($row = $latestRegistrations->fetch_assoc()): ?>
+                            <tr>
+                                <td><?= htmlspecialchars($row["registration_id"]) ?></td>
+                                <td><?= htmlspecialchars($row["student_name"]) ?></td>
+                                <td><?= htmlspecialchars($row["event_title"]) ?></td>
+                                <td><?= htmlspecialchars($row["registration_date"]) ?></td>
+                            </tr>
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="4">No registrations found.</td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </section>
+        <section>
+            <h2>Recent Activity / Audit Log</h2>
+            <p>Recent administrative actions recorded in the system.</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Log ID</th>
+                        <th>Action</th>
+                        <th>Administrator</th>
+                        <th>Details</th>
+                        <th>Date &amp; Time</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <?php if ($auditLogs && $auditLogs->num_rows > 0): ?>
+                        <?php while ($log = $auditLogs->fetch_assoc()): ?>
+                            <tr>
+                                <td><?= (int) $log["log_id"] ?></td>
+                                <td><?= htmlspecialchars($log["action"], ENT_QUOTES, "UTF-8") ?></td>
+                                <td><?= htmlspecialchars($log["admin_name"] ?? "Admin", ENT_QUOTES, "UTF-8") ?></td>
+                                <td><?= htmlspecialchars($log["details"] ?? "", ENT_QUOTES, "UTF-8") ?></td>
+                                <td><?= htmlspecialchars($log["created_at"], ENT_QUOTES, "UTF-8") ?></td>
+                            </tr>
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="5">No administrative activity recorded.</td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 StudentHub Portal. All rights reserved.</p>
+    </footer>
 
 </body>
+
 </html>

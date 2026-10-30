@@ -1,6 +1,13 @@
-
 <?php
-session_start();
+$isSecure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443);
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start([
+        'cookie_secure' => $isSecure,
+        'cookie_httponly' => true,
+        'cookie_samesite' => 'Lax'
+    ]);
+}
 
 $timeout = 900;
 
@@ -27,4 +34,8 @@ if (
 }
 
 $_SESSION["last_activity"] = time();
+
+if (empty($_SESSION["logout_csrf"])) {
+    $_SESSION["logout_csrf"] = bin2hex(random_bytes(32));
+}
 ?>

@@ -1,6 +1,14 @@
 
 <?php
-session_start();
+$isSecure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443);
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start([
+        'cookie_secure' => $isSecure,
+        'cookie_httponly' => true,
+        'cookie_samesite' => 'Lax'
+    ]);
+}
 
 $timeout = 900; // 15 minutes
 
@@ -18,14 +26,18 @@ if (
             "expires" => time() - 42000,
             "path" => $params["path"],
             "domain" => $params["domain"],
-            "secure" => $params["secure"],
-            "httponly" => $params["httponly"],
+            "secure" => $isSecure,
+            "httponly" => true,
             "samesite" => "Lax"
         ]);
     }
 
     session_destroy();
-    session_start();
+    session_start([
+        'cookie_secure' => $isSecure,
+        'cookie_httponly' => true,
+        'cookie_samesite' => 'Lax'
+    ]);
 
     header("Location: login.php?timeout=1");
     exit;
@@ -39,7 +51,7 @@ if (isset($_GET["timeout"]) && $_GET["timeout"] === "1") {
     $message = "Your session expired. Please log in again.";
 }
 
-// Restore login using Remember Me token
+// Restore login using Remember Me token with Token Rotation (P10-02)
 if (
     !isset($_SESSION["student_id"]) &&
     !isset($_SESSION["admin_id"]) &&
@@ -75,6 +87,26 @@ if (
             $_SESSION["student_email"] = $student["email"];
             $_SESSION["role"] = "student";
             $_SESSION["last_activity"] = time();
+
+            // P10-02: Rotate token on successful remember-me login
+            $newToken = bin2hex(random_bytes(32));
+            $newTokenHash = hash("sha256", $newToken);
+            $newExpires = date("Y-m-d H:i:s", time() + 2592000);
+
+            $rotStmt = $conn->prepare(
+                "UPDATE remember_tokens SET token_hash = ?, expires_at = ? WHERE token_hash = ?"
+            );
+            $rotStmt->bind_param("sss", $newTokenHash, $newExpires, $tokenHash);
+            $rotStmt->execute();
+            $rotStmt->close();
+
+            setcookie("remember_token", $newToken, [
+                "expires" => time() + 2592000,
+                "path" => "/",
+                "secure" => $isSecure,
+                "httponly" => true,
+                "samesite" => "Lax"
+            ]);
         }
     } elseif ($tokenRow && !empty($tokenRow["admin_id"])) {
         $stmt = $conn->prepare(
@@ -93,6 +125,26 @@ if (
             $_SESSION["student_email"] = $admin["email"];
             $_SESSION["role"] = "admin";
             $_SESSION["last_activity"] = time();
+
+            // P10-02: Rotate token on successful remember-me login
+            $newToken = bin2hex(random_bytes(32));
+            $newTokenHash = hash("sha256", $newToken);
+            $newExpires = date("Y-m-d H:i:s", time() + 2592000);
+
+            $rotStmt = $conn->prepare(
+                "UPDATE remember_tokens SET token_hash = ?, expires_at = ? WHERE token_hash = ?"
+            );
+            $rotStmt->bind_param("sss", $newTokenHash, $newExpires, $tokenHash);
+            $rotStmt->execute();
+            $rotStmt->close();
+
+            setcookie("remember_token", $newToken, [
+                "expires" => time() + 2592000,
+                "path" => "/",
+                "secure" => $isSecure,
+                "httponly" => true,
+                "samesite" => "Lax"
+            ]);
         }
     }
 
@@ -110,6 +162,7 @@ if (
         setcookie("remember_token", "", [
             "expires" => time() - 3600,
             "path" => "/",
+            "secure" => $isSecure,
             "httponly" => true,
             "samesite" => "Lax"
         ]);
@@ -179,6 +232,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     setcookie("remember_token", $token, [
                         "expires" => time() + 2592000,
                         "path" => "/",
+                        "secure" => $isSecure,
                         "httponly" => true,
                         "samesite" => "Lax"
                     ]);
@@ -235,6 +289,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     setcookie("remember_token", $token, [
                         "expires" => time() + 2592000,
                         "path" => "/",
+                        "secure" => $isSecure,
                         "httponly" => true,
                         "samesite" => "Lax"
                     ]);
@@ -311,12 +366,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             </fieldset>
         </form>
 
-        <p role="status" aria-live="polite">
+        <div class="login-feedback" role="status" aria-live="polite">
             <?php if (isset($_GET["denied"])): ?>
-                <p>You do not have permission to access that dashboard.</p>
+                <p class="error-msg">You do not have permission to access that dashboard.</p>
             <?php endif; ?>
-            <?= htmlspecialchars($message, ENT_QUOTES, "UTF-8") ?>
-        </p>
+            <?php if (isset($_GET["logged_out"])): ?>
+                <p class="strength-strong">You have been logged out successfully.</p>
+            <?php endif; ?>
+            <?php if ($message !== ""): ?>
+                <p class="error-msg"><?= htmlspecialchars($message, ENT_QUOTES, "UTF-8") ?></p>
+            <?php endif; ?>
+        </div>
 
         <p>Don't have an account? <a href="register.php">Register here</a></p>
     </section>

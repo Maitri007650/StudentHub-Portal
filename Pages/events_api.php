@@ -1,4 +1,3 @@
-
 <?php
 session_start();
 
@@ -225,6 +224,28 @@ try {
             ]);
         }
 
+        // P11/P12: Check if event has linked student registrations before deleting
+        $chkStmt = $conn->prepare("SELECT COUNT(*) AS count FROM registrations WHERE event_id = ?");
+        $chkStmt->bind_param("i", $id);
+        $chkStmt->execute();
+        $regCount = (int)($chkStmt->get_result()->fetch_assoc()["count"] ?? 0);
+        $chkStmt->close();
+
+        if ($regCount > 0) {
+            sendResponse(409, [
+                "success" => false,
+                "message" => "Cannot delete event: " . $regCount . " student registration(s) exist for this event."
+            ]);
+        }
+
+        // Fetch poster filename to clean up poster file after deletion
+        $pStmt = $conn->prepare("SELECT poster FROM events WHERE event_id = ?");
+        $pStmt->bind_param("i", $id);
+        $pStmt->execute();
+        $pRow = $pStmt->get_result()->fetch_assoc();
+        $pStmt->close();
+        $posterToDelete = $pRow["poster"] ?? null;
+
         $stmt = $conn->prepare(
             "DELETE FROM events WHERE event_id = ?"
         );
@@ -239,6 +260,14 @@ try {
                 "success" => false,
                 "message" => "Event not found."
             ]);
+        }
+
+        // Safely unlink poster file if it exists
+        if ($posterToDelete && basename($posterToDelete) === $posterToDelete) {
+            $posterPath = __DIR__ . "/../uploads/event_posters/" . $posterToDelete;
+            if (is_file($posterPath)) {
+                @unlink($posterPath);
+            }
         }
 
         logAdminAction(

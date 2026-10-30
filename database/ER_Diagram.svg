@@ -1,0 +1,221 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 850" width="100%" height="100%" style="background-color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+  <defs>
+    <style>
+      .tbl-header { font-size: 15px; font-weight: bold; fill: #ffffff; }
+      .tbl-sub { font-size: 12px; fill: #e2e8f0; }
+      .col-pk { font-weight: bold; fill: #b45309; }
+      .col-fk { font-weight: bold; fill: #1d4ed8; }
+      .col-name { font-size: 13px; fill: #1e293b; }
+      .col-type { font-size: 12px; fill: #64748b; font-family: monospace; }
+      .rel-line { stroke: #64748b; stroke-width: 2; fill: none; }
+      .rel-marker { fill: #475569; }
+    </style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#475569" />
+    </marker>
+    <marker id="dot" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6">
+      <circle cx="5" cy="5" r="4" fill="#475569" />
+    </marker>
+  </defs>
+
+  <!-- Title & Subtitle -->
+  <text x="600" y="45" text-anchor="middle" font-size="24" font-weight="bold" fill="#0f172a">StudentHub Portal – Relational Database ER Diagram</text>
+  <text x="600" y="70" text-anchor="middle" font-size="13" fill="#64748b">Database: studenthub | Comprehensive Schema with Primary &amp; Foreign Keys</text>
+
+  <!-- Table 1: admins (Top Left) -->
+  <g transform="translate(60, 110)">
+    <rect width="280" height="175" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5" filter="drop-shadow(0 4px 6px rgba(0,0,0,0.05))" />
+    <path d="M 0 8 Q 0 0 8 0 L 272 0 Q 280 0 280 8 L 280 40 L 0 40 Z" fill="#1e3a8a" />
+    <text x="15" y="25" class="tbl-header">admins</text>
+    <text x="265" y="25" text-anchor="end" class="tbl-sub">Table</text>
+    <!-- Columns -->
+    <text x="15" y="65" class="col-pk">PK</text>
+    <text x="45" y="65" class="col-name">admin_id</text>
+    <text x="265" y="65" text-anchor="end" class="col-type">INT(11) AUTO</text>
+
+    <text x="45" y="95" class="col-name">name</text>
+    <text x="265" y="95" text-anchor="end" class="col-type">VARCHAR(100)</text>
+
+    <text x="15" y="125" font-weight="bold" fill="#059669">UK</text>
+    <text x="45" y="125" class="col-name">email</text>
+    <text x="265" y="125" text-anchor="end" class="col-type">VARCHAR(150)</text>
+
+    <text x="45" y="155" class="col-name">password</text>
+    <text x="265" y="155" text-anchor="end" class="col-type">VARCHAR(255)</text>
+  </g>
+
+  <!-- Table 2: audit_logs (Bottom Left) -->
+  <g transform="translate(60, 360)">
+    <rect width="280" height="205" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5" filter="drop-shadow(0 4px 6px rgba(0,0,0,0.05))" />
+    <path d="M 0 8 Q 0 0 8 0 L 272 0 Q 280 0 280 8 L 280 40 L 0 40 Z" fill="#1e3a8a" />
+    <text x="15" y="25" class="tbl-header">audit_logs</text>
+    <text x="265" y="25" text-anchor="end" class="tbl-sub">Table</text>
+
+    <text x="15" y="65" class="col-pk">PK</text>
+    <text x="45" y="65" class="col-name">log_id</text>
+    <text x="265" y="65" text-anchor="end" class="col-type">INT(11) AUTO</text>
+
+    <text x="15" y="95" class="col-fk">FK</text>
+    <text x="45" y="95" class="col-name">admin_id</text>
+    <text x="265" y="95" text-anchor="end" class="col-type">INT(11)</text>
+
+    <text x="45" y="125" class="col-name">action</text>
+    <text x="265" y="125" text-anchor="end" class="col-type">VARCHAR(255)</text>
+
+    <text x="45" y="155" class="col-name">details</text>
+    <text x="265" y="155" text-anchor="end" class="col-type">TEXT</text>
+
+    <text x="45" y="185" class="col-name">created_at</text>
+    <text x="265" y="185" text-anchor="end" class="col-type">TIMESTAMP</text>
+  </g>
+
+  <!-- Table 3: remember_tokens (Top Center) -->
+  <g transform="translate(460, 110)">
+    <rect width="280" height="205" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5" filter="drop-shadow(0 4px 6px rgba(0,0,0,0.05))" />
+    <path d="M 0 8 Q 0 0 8 0 L 272 0 Q 280 0 280 8 L 280 40 L 0 40 Z" fill="#1e3a8a" />
+    <text x="15" y="25" class="tbl-header">remember_tokens</text>
+    <text x="265" y="25" text-anchor="end" class="tbl-sub">Table</text>
+
+    <text x="15" y="65" class="col-pk">PK</text>
+    <text x="45" y="65" class="col-name">id</text>
+    <text x="265" y="65" text-anchor="end" class="col-type">INT(11) AUTO</text>
+
+    <text x="15" y="95" class="col-fk">FK</text>
+    <text x="45" y="95" class="col-name">student_id</text>
+    <text x="265" y="95" text-anchor="end" class="col-type">INT(11) NULL</text>
+
+    <text x="15" y="125" font-weight="bold" fill="#059669">UK</text>
+    <text x="45" y="125" class="col-name">token_hash</text>
+    <text x="265" y="125" text-anchor="end" class="col-type">CHAR(64)</text>
+
+    <text x="45" y="155" class="col-name">expires_at</text>
+    <text x="265" y="155" text-anchor="end" class="col-type">DATETIME</text>
+
+    <text x="15" y="185" class="col-fk">FK</text>
+    <text x="45" y="185" class="col-name">admin_id</text>
+    <text x="265" y="185" text-anchor="end" class="col-type">INT(11) NULL</text>
+  </g>
+
+  <!-- Table 4: registrations (Bottom Center) -->
+  <g transform="translate(460, 420)">
+    <rect width="280" height="175" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5" filter="drop-shadow(0 4px 6px rgba(0,0,0,0.05))" />
+    <path d="M 0 8 Q 0 0 8 0 L 272 0 Q 280 0 280 8 L 280 40 L 0 40 Z" fill="#1e3a8a" />
+    <text x="15" y="25" class="tbl-header">registrations</text>
+    <text x="265" y="25" text-anchor="end" class="tbl-sub">Table</text>
+
+    <text x="15" y="65" class="col-pk">PK</text>
+    <text x="45" y="65" class="col-name">registration_id</text>
+    <text x="265" y="65" text-anchor="end" class="col-type">INT(11) AUTO</text>
+
+    <text x="15" y="95" class="col-fk">FK</text>
+    <text x="45" y="95" class="col-name">student_id</text>
+    <text x="265" y="95" text-anchor="end" class="col-type">INT(11)</text>
+
+    <text x="15" y="125" class="col-fk">FK</text>
+    <text x="45" y="125" class="col-name">event_id</text>
+    <text x="265" y="125" text-anchor="end" class="col-type">INT(11)</text>
+
+    <text x="45" y="155" class="col-name">registration_date</text>
+    <text x="265" y="155" text-anchor="end" class="col-type">TIMESTAMP</text>
+  </g>
+
+  <!-- Table 5: students (Top Right) -->
+  <g transform="translate(860, 110)">
+    <rect width="280" height="325" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5" filter="drop-shadow(0 4px 6px rgba(0,0,0,0.05))" />
+    <path d="M 0 8 Q 0 0 8 0 L 272 0 Q 280 0 280 8 L 280 40 L 0 40 Z" fill="#1e3a8a" />
+    <text x="15" y="25" class="tbl-header">students</text>
+    <text x="265" y="25" text-anchor="end" class="tbl-sub">Table</text>
+
+    <text x="15" y="65" class="col-pk">PK</text>
+    <text x="45" y="65" class="col-name">student_id</text>
+    <text x="265" y="65" text-anchor="end" class="col-type">INT(11) AUTO</text>
+
+    <text x="45" y="95" class="col-name">name</text>
+    <text x="265" y="95" text-anchor="end" class="col-type">VARCHAR(100)</text>
+
+    <text x="15" y="125" font-weight="bold" fill="#059669">UK</text>
+    <text x="45" y="125" class="col-name">email</text>
+    <text x="265" y="125" text-anchor="end" class="col-type">VARCHAR(100)</text>
+
+    <text x="45" y="155" class="col-name">password</text>
+    <text x="265" y="155" text-anchor="end" class="col-type">VARCHAR(255)</text>
+
+    <text x="45" y="185" class="col-name">created_at</text>
+    <text x="265" y="185" text-anchor="end" class="col-type">TIMESTAMP</text>
+
+    <text x="45" y="215" class="col-name">mobile</text>
+    <text x="265" y="215" text-anchor="end" class="col-type">VARCHAR(10)</text>
+
+    <text x="45" y="245" class="col-name">course</text>
+    <text x="265" y="245" text-anchor="end" class="col-type">VARCHAR(50)</text>
+
+    <text x="45" y="275" class="col-name">year</text>
+    <text x="265" y="275" text-anchor="end" class="col-type">TINYINT(3)</text>
+
+    <text x="45" y="305" class="col-name">gender</text>
+    <text x="265" y="305" text-anchor="end" class="col-type">VARCHAR(10)</text>
+  </g>
+
+  <!-- Table 6: events (Bottom Right) -->
+  <g transform="translate(860, 480)">
+    <rect width="280" height="265" rx="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5" filter="drop-shadow(0 4px 6px rgba(0,0,0,0.05))" />
+    <path d="M 0 8 Q 0 0 8 0 L 272 0 Q 280 0 280 8 L 280 40 L 0 40 Z" fill="#1e3a8a" />
+    <text x="15" y="25" class="tbl-header">events</text>
+    <text x="265" y="25" text-anchor="end" class="tbl-sub">Table</text>
+
+    <text x="15" y="65" class="col-pk">PK</text>
+    <text x="45" y="65" class="col-name">event_id</text>
+    <text x="265" y="65" text-anchor="end" class="col-type">INT(11) AUTO</text>
+
+    <text x="45" y="95" class="col-name">title</text>
+    <text x="265" y="95" text-anchor="end" class="col-type">VARCHAR(150)</text>
+
+    <text x="45" y="125" class="col-name">description</text>
+    <text x="265" y="125" text-anchor="end" class="col-type">TEXT</text>
+
+    <text x="45" y="155" class="col-name">event_date</text>
+    <text x="265" y="155" text-anchor="end" class="col-type">DATE</text>
+
+    <text x="45" y="185" class="col-name">location</text>
+    <text x="265" y="185" text-anchor="end" class="col-type">VARCHAR(150)</text>
+
+    <text x="45" y="215" class="col-name">created_at</text>
+    <text x="265" y="215" text-anchor="end" class="col-type">TIMESTAMP</text>
+
+    <text x="45" y="245" class="col-name">poster</text>
+    <text x="265" y="245" text-anchor="end" class="col-type">VARCHAR(255)</text>
+  </g>
+
+  <!-- Relationship Connectors -->
+  <!-- 1. admins -> audit_logs -->
+  <path d="M 200 285 L 200 360" class="rel-line" marker-start="url(#dot)" marker-end="url(#arrow)" />
+  <text x="210" y="325" font-size="11" fill="#475569">1:N (admin_id)</text>
+
+  <!-- 2. admins -> remember_tokens -->
+  <path d="M 340 195 L 460 295" class="rel-line" marker-start="url(#dot)" marker-end="url(#arrow)" />
+  <text x="360" y="235" font-size="11" fill="#475569">1:N (admin_id)</text>
+
+  <!-- 3. students -> remember_tokens -->
+  <path d="M 860 205 L 740 205" class="rel-line" marker-start="url(#dot)" marker-end="url(#arrow)" />
+  <text x="760" y="195" font-size="11" fill="#475569">1:N (student_id)</text>
+
+  <!-- 4. students -> registrations -->
+  <path d="M 860 410 L 780 410 L 780 500 L 740 500" class="rel-line" marker-start="url(#dot)" marker-end="url(#arrow)" />
+  <text x="790" y="450" font-size="11" fill="#475569">1:N (student_id)</text>
+
+  <!-- 5. events -> registrations -->
+  <path d="M 860 545 L 740 545" class="rel-line" marker-start="url(#dot)" marker-end="url(#arrow)" />
+  <text x="760" y="535" font-size="11" fill="#475569">1:N (event_id)</text>
+
+  <!-- Legend -->
+  <g transform="translate(60, 620)">
+    <rect width="280" height="120" rx="6" fill="#ffffff" stroke="#e2e8f0" stroke-width="1" />
+    <text x="15" y="25" font-size="13" font-weight="bold" fill="#0f172a">Legend</text>
+    <text x="15" y="50" class="col-pk">PK</text>
+    <text x="45" y="50" font-size="12" fill="#475569">Primary Key (Unique &amp; Auto Incremented)</text>
+    <text x="15" y="75" class="col-fk">FK</text>
+    <text x="45" y="75" font-size="12" fill="#475569">Foreign Key (Referential Integrity)</text>
+    <text x="15" y="100" font-weight="bold" fill="#059669">UK</text>
+    <text x="45" y="100" font-size="12" fill="#475569">Unique Constraint</text>
+  </g>
+</svg>

@@ -1,0 +1,74 @@
+@startuml
+' StudentHub Portal Database ER Diagram
+' Practical 8 & 14 Schema
+hide circle
+skinparam linetype ortho
+skinparam monochrome false
+skinparam roundcorner 5
+
+entity "admins" as admins {
+  * **admin_id** : int(11) <<PK, AUTO_INCREMENT>>
+  --
+  * name : varchar(100)
+  * email : varchar(150) <<UK>>
+  * password : varchar(255)
+}
+
+entity "students" as students {
+  * **student_id** : int(11) <<PK, AUTO_INCREMENT>>
+  --
+  * name : varchar(100)
+  * email : varchar(100) <<UK>>
+  * password : varchar(255)
+  * created_at : timestamp
+  mobile : varchar(10)
+  course : varchar(50)
+  year : tinyint(3)
+  gender : varchar(10)
+}
+
+entity "events" as events {
+  * **event_id** : int(11) <<PK, AUTO_INCREMENT>>
+  --
+  * title : varchar(150)
+  description : text
+  * event_date : date
+  location : varchar(150)
+  * created_at : timestamp
+  poster : varchar(255)
+}
+
+entity "registrations" as registrations {
+  * **registration_id** : int(11) <<PK, AUTO_INCREMENT>>
+  --
+  * student_id : int(11) <<FK>>
+  * event_id : int(11) <<FK>>
+  * registration_date : timestamp
+}
+
+entity "remember_tokens" as remember_tokens {
+  * **id** : int(11) <<PK, AUTO_INCREMENT>>
+  --
+  student_id : int(11) <<FK>>
+  * token_hash : char(64) <<UK>>
+  * expires_at : datetime
+  admin_id : int(11) <<FK>>
+}
+
+entity "audit_logs" as audit_logs {
+  * **log_id** : int(11) <<PK, AUTO_INCREMENT>>
+  --
+  * admin_id : int(11) <<FK>>
+  * action : varchar(255)
+  details : text
+  * created_at : timestamp
+}
+
+students ||..o{ registrations : "registers"
+events ||..o{ registrations : "booked in"
+students ||..o{ remember_tokens : "token holder"
+admins ||..o{ remember_tokens : "token holder"
+admins ||..o{ audit_logs : "logged actions"
+
+@enduml
+

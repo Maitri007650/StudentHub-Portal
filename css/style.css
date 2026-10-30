@@ -591,7 +591,7 @@ span {
     margin: 0 auto;
 }
 
-.register-section > p {
+.register-section>p {
     text-align: center;
 }
 
@@ -603,7 +603,7 @@ span {
     margin: 0 auto;
 }
 
-.login-section > p {
+.login-section>p {
     text-align: center;
 }
 
@@ -751,4 +751,101 @@ input:focus-visible {
 
 .modal-content button {
     float: right;
+}
+
+/* ====================================================
+   Accessible Form Validation & Password Strength
+   ==================================================== */
+
+.error-msg {
+    display: block;
+    color: #c62828;
+    font-size: 0.88rem;
+    margin-top: 4px;
+    font-weight: 600;
+}
+
+input[aria-invalid="true"],
+select[aria-invalid="true"],
+textarea[aria-invalid="true"] {
+    border: 2px solid #c62828 !important;
+    background-color: #fff8f8;
+}
+
+.strength-msg {
+    display: block;
+    font-size: 0.88rem;
+    margin-top: 4px;
+    font-weight: 600;
+}
+
+.strength-weak {
+    color: #c62828;
+}
+
+.strength-medium {
+    color: #b78103;
+}
+
+.strength-strong {
+    color: #2e7d32;
+}
+
+.dark-theme input[aria-invalid="true"],
+.dark-theme select[aria-invalid="true"],
+.dark-theme textarea[aria-invalid="true"] {
+    border-color: #ef5350 !important;
+    background-color: #2b1d1d;
+}
+
+.dark-theme .error-msg,
+.dark-theme .strength-weak {
+    color: #ef5350;
+}
+
+.dark-theme .strength-medium {
+    color: #ffca28;
+}
+
+.dark-theme .strength-strong {
+    color: #66bb6a;
+}
+
+
+
+/* Status alerts for form submission, CRUD operations, and message visibility */
+p.success,
+.alert-success {
+    background-color: #ecfdf5;
+    color: #065f46;
+    border: 1px solid #10b981;
+    padding: 12px 16px;
+    border-radius: 6px;
+    font-weight: 600;
+    margin: 15px 0;
+}
+
+p.error,
+.alert-error {
+    background-color: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #ef4444;
+    padding: 12px 16px;
+    border-radius: 6px;
+    font-weight: 600;
+    margin: 15px 0;
+}
+
+.dark-theme p.success,
+.dark-theme .alert-success {
+    background-color: #064e3b;
+    color: #a7f3d0;
+    border-color: #059669;
+}
+
+.dark-theme p.error,
+.dark-theme .alert-error {
+    background-color: #7f1d1d;
+    color: #fecaca;
+    border-color: #dc2626;
 }

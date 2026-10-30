@@ -4,17 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <link rel="stylesheet" href="../css/style.css">
-
-    <title>StudentHub Portal - Profile</title>
+    <title>StudentHub Portal - Student Profile</title>
 </head>
 
 <body>
 
     <header>
         <h1>Student Profile</h1>
-        <p>View your StudentHub profile information.</p>
+        <p>Personal and academic profile of the currently logged-in student.</p>
     </header>
 
     <button id="menuToggle" type="button"
@@ -25,130 +23,310 @@
     </button>
 
     <nav id="mainNav">
-
         <a href="home.html">Home</a>
         <a href="about.html">About</a>
         <a href="register.php">Register</a>
-        <a href="login.html">Login</a>
-        <a href="dashboard.html">Dashboard</a>
+        <a href="login.php">Login</a>
+        <a href="dashboard.php">Dashboard</a>
         <a href="events.html">Events</a>
-        <a href="profile.html">Profile</a>
-        <a href="contact.html">Contact</a>
-        <a href="admin.html">Admin</a>
+        <a href="profile.php">Profile</a>
+        <a href="contact.php">Contact</a>
         <a href="faq.html">FAQ</a>
         <a href="timetable.html">Timetable</a>
-
         <button id="themeToggle" type="button">Dark Mode</button>
-
     </nav>
 
     <main>
 
-        <section class="profile-header">
+        <p id="profileStatusMessage" role="status" style="display:none;"></p>
 
-            <img
-                src="../image/student.png"
-                alt="Student Photo"
-                width="150"
-                height="150">
+        <!-- Dynamic Profile Container (Loaded for currently logged-in student) -->
+        <div id="studentProfileContainer">
+            <p id="profileLoading">Loading your profile from secure session...</p>
+        </div>
 
-            <div class="profile-info">
+        <!-- Edit Profile Section (Toggled on Edit Profile action) -->
+        <section id="editProfileSection" style="display:none;">
+            <h2>Edit Profile</h2>
+            <p>Update your permitted contact and academic information. Institutional credentials (ID &amp; Email) cannot be altered.</p>
 
-                <h2>Student Name</h2>
+            <form id="editProfileForm">
+                <input type="hidden" id="profileCsrfToken" name="csrf_token" value="">
 
                 <p>
-                    <strong>Enrollment No:</strong>
-                    25CE000
+                    <label for="displayStudentId">Student ID (Read-only):</label><br>
+                    <input type="text" id="displayStudentId" disabled>
                 </p>
 
                 <p>
-                    <strong>Course:</strong>
-                    Computer Engineering
+                    <label for="displayEmail">Email Address (Read-only):</label><br>
+                    <input type="email" id="displayEmail" disabled>
                 </p>
 
                 <p>
-                    <strong>Semester:</strong>
-                    3
+                    <label for="editName">Full Name:</label><br>
+                    <input type="text" id="editName" name="name" required maxlength="100">
                 </p>
 
-            </div>
+                <p>
+                    <label for="editMobile">Mobile Number (10 digits):</label><br>
+                    <input type="tel" id="editMobile" name="mobile" required pattern="[0-9]{10}" maxlength="10">
+                </p>
 
-        </section>
+                <p>
+                    <label for="editGender">Gender:</label><br>
+                    <select id="editGender" name="gender" required>
+                        <option value="">-- Select Gender --</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </p>
 
+                <p>
+                    <label for="editCourse">Course / Program:</label><br>
+                    <input type="text" id="editCourse" name="course" required maxlength="50">
+                </p>
 
-        <section>
+                <p>
+                    <label for="editYear">Academic Year:</label><br>
+                    <select id="editYear" name="year" required>
+                        <option value="">-- Select Year --</option>
+                        <option value="1">Year 1</option>
+                        <option value="2">Year 2</option>
+                        <option value="3">Year 3</option>
+                        <option value="4">Year 4</option>
+                    </select>
+                </p>
 
-            <h2>Personal Information</h2>
-
-            <div class="profile-grid">
-
-                <div>
-                    <strong>Email:</strong>
-                    <p>student@email.com</p>
-                </div>
-
-                <div>
-                    <strong>Phone:</strong>
-                    <p>9876543210</p>
-                </div>
-
-                <div>
-                    <strong>Gender:</strong>
-                    <p>Female</p>
-                </div>
-
-                <div>
-                    <strong>Date of Birth:</strong>
-                    <p>01/01/2007</p>
-                </div>
-
-                <div>
-                    <strong>Address:</strong>
-                    <p>Anand, Gujarat</p>
-                </div>
-
-                <div>
-                    <strong>Blood Group:</strong>
-                    <p>O+</p>
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <section>
-
-            <button type="button">Edit Profile</button>
-
-        </section>
-
-
-        <section>
-
-            <h2>Student Directory</h2>
-
-            <p id="studentLoading">Loading students...</p>
-
-            <p id="studentError"></p>
-
-            <div id="studentList" class="profile-grid"></div>
-
+                <p>
+                    <button type="submit" class="btn">Save Profile Changes</button>
+                    <button type="button" id="cancelEditBtn" class="btn" style="background-color:#64748b;">Cancel</button>
+                </p>
+            </form>
         </section>
 
     </main>
 
-
     <footer>
-
-        <p>
-            &copy; 2026 StudentHub Portal. All rights reserved.
-        </p>
-
+        <p>&copy; 2026 StudentHub Portal. All rights reserved.</p>
     </footer>
 
     <script src="../js/script.js"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const container = document.getElementById("studentProfileContainer");
+        const editSection = document.getElementById("editProfileSection");
+        const statusMsg = document.getElementById("profileStatusMessage");
+        const editForm = document.getElementById("editProfileForm");
+        const cancelBtn = document.getElementById("cancelEditBtn");
 
+        let currentStudent = null;
+        let csrfToken = "";
+
+        function showStatus(text, isError) {
+            statusMsg.textContent = text;
+            statusMsg.className = isError ? "error" : "success";
+            statusMsg.style.display = "block";
+            statusMsg.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
+
+        async function fetchProfile() {
+            try {
+                const response = await fetch("profile_api.php");
+                if (response.status === 401) {
+                    window.location.href = "login.php?denied=1";
+                    return;
+                }
+                const data = await response.json();
+                if (!response.ok || !data.success) {
+                    throw new Error(data.message || "Unable to load student profile.");
+                }
+
+                currentStudent = data.student;
+                csrfToken = data.csrf_token;
+                document.getElementById("profileCsrfToken").value = csrfToken;
+
+                renderProfile(currentStudent, data.registered_events || []);
+            } catch (err) {
+                container.innerHTML = '<p class="error">Unable to load profile. Please make sure you are logged in as a student.</p><p><a href="login.php" class="btn">Go to Login</a></p>';
+            }
+        }
+
+        function renderProfile(student, events) {
+            while (container.firstChild) {
+                container.removeChild(container.firstChild);
+            }
+
+            // Header card
+            const headerSec = document.createElement("section");
+            headerSec.className = "profile-header";
+
+            const img = document.createElement("img");
+            img.src = "../image/student.png";
+            img.alt = "Student Photo";
+            img.width = 140;
+            img.height = 140;
+
+            const infoDiv = document.createElement("div");
+            infoDiv.className = "profile-info";
+
+            const h2 = document.createElement("h2");
+            h2.textContent = student.name;
+
+            const pId = document.createElement("p");
+            pId.innerHTML = "<strong>Student ID / Roll No:</strong> " + student.student_id;
+
+            const pCourse = document.createElement("p");
+            pCourse.innerHTML = "<strong>Course:</strong> " + (student.course || "Not specified");
+
+            const pYear = document.createElement("p");
+            pYear.innerHTML = "<strong>Academic Year:</strong> " + (student.year ? "Year " + student.year : "Not specified");
+
+            infoDiv.appendChild(h2);
+            infoDiv.appendChild(pId);
+            infoDiv.appendChild(pCourse);
+            infoDiv.appendChild(pYear);
+
+            headerSec.appendChild(img);
+            headerSec.appendChild(infoDiv);
+            container.appendChild(headerSec);
+
+            // Personal Information
+            const personalSec = document.createElement("section");
+            const personalH2 = document.createElement("h2");
+            personalH2.textContent = "Personal Information";
+            personalSec.appendChild(personalH2);
+
+            const pGrid = document.createElement("div");
+            pGrid.className = "profile-grid";
+
+            const pFields = [
+                { label: "Full Name", value: student.name },
+                { label: "Email Address", value: student.email },
+                { label: "Mobile Number", value: student.mobile || "Not provided" },
+                { label: "Gender", value: student.gender || "Not specified" },
+                { label: "Member Since", value: student.created_at || "Registered" },
+                { label: "Portal Role", value: "Student" }
+            ];
+
+            pFields.forEach(function (f) {
+                const box = document.createElement("div");
+                const lbl = document.createElement("strong");
+                lbl.textContent = f.label + ":";
+                const val = document.createElement("p");
+                val.textContent = f.value;
+                box.appendChild(lbl);
+                box.appendChild(val);
+                pGrid.appendChild(box);
+            });
+            personalSec.appendChild(pGrid);
+            container.appendChild(personalSec);
+
+            // Academic Information
+            const academicSec = document.createElement("section");
+            const academicH2 = document.createElement("h2");
+            academicH2.textContent = "Academic Information";
+            academicSec.appendChild(academicH2);
+
+            const aGrid = document.createElement("div");
+            aGrid.className = "profile-grid";
+
+            const aFields = [
+                { label: "Student ID", value: student.student_id },
+                { label: "Enrolled Course", value: student.course || "Not assigned" },
+                { label: "Current Year", value: student.year ? "Year " + student.year : "Not assigned" },
+                { label: "Registered Events", value: events.length + " event(s) registered" }
+            ];
+
+            aFields.forEach(function (f) {
+                const box = document.createElement("div");
+                const lbl = document.createElement("strong");
+                lbl.textContent = f.label + ":";
+                const val = document.createElement("p");
+                val.textContent = f.value;
+                box.appendChild(lbl);
+                box.appendChild(val);
+                aGrid.appendChild(box);
+            });
+            academicSec.appendChild(aGrid);
+
+            const editBtnDiv = document.createElement("div");
+            editBtnDiv.style.marginTop = "20px";
+            const editBtn = document.createElement("button");
+            editBtn.type = "button";
+            editBtn.className = "btn";
+            editBtn.textContent = "Edit Profile";
+            editBtn.addEventListener("click", openEditForm);
+            editBtnDiv.appendChild(editBtn);
+
+            const phpLink = document.createElement("a");
+            phpLink.href = "profile.php";
+            phpLink.className = "btn";
+            phpLink.style.marginLeft = "10px";
+            phpLink.style.backgroundColor = "#475569";
+            phpLink.textContent = "Server View (profile.php)";
+            editBtnDiv.appendChild(phpLink);
+
+            academicSec.appendChild(editBtnDiv);
+            container.appendChild(academicSec);
+        }
+
+        function openEditForm() {
+            if (!currentStudent) return;
+            document.getElementById("displayStudentId").value = currentStudent.student_id;
+            document.getElementById("displayEmail").value = currentStudent.email;
+            document.getElementById("editName").value = currentStudent.name || "";
+            document.getElementById("editMobile").value = currentStudent.mobile || "";
+            document.getElementById("editGender").value = currentStudent.gender || "";
+            document.getElementById("editCourse").value = currentStudent.course || "";
+            document.getElementById("editYear").value = currentStudent.year || "";
+
+            editSection.style.display = "block";
+            editSection.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+
+        if (cancelBtn) {
+            cancelBtn.addEventListener("click", function () {
+                editSection.style.display = "none";
+            });
+        }
+
+        if (editForm) {
+            editForm.addEventListener("submit", async function (e) {
+                e.preventDefault();
+                const payload = {
+                    csrf_token: document.getElementById("profileCsrfToken").value,
+                    name: document.getElementById("editName").value.trim(),
+                    mobile: document.getElementById("editMobile").value.trim(),
+                    gender: document.getElementById("editGender").value,
+                    course: document.getElementById("editCourse").value.trim(),
+                    year: parseInt(document.getElementById("editYear").value, 10)
+                };
+
+                try {
+                    const res = await fetch("profile_api.php", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const result = await res.json();
+                    if (!res.ok || !result.success) {
+                        throw new Error(result.message || "Failed to update profile.");
+                    }
+
+                    showStatus("Profile updated successfully.", false);
+                    editSection.style.display = "none";
+                    fetchProfile();
+                } catch (err) {
+                    showStatus(err.message, true);
+                }
+            });
+        }
+
+        fetchProfile();
+    });
+    </script>
 </body>
-
 </html>

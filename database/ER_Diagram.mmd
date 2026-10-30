@@ -1,0 +1,59 @@
+erDiagram
+    admins {
+        int admin_id PK "AUTO_INCREMENT"
+        varchar name "100"
+        varchar email UK "150, UNIQUE"
+        varchar password "255"
+    }
+
+    students {
+        int student_id PK "AUTO_INCREMENT"
+        varchar name "100"
+        varchar email UK "100, UNIQUE"
+        varchar password "255"
+        timestamp created_at "DEFAULT CURRENT_TIMESTAMP"
+        varchar mobile "10, NULL"
+        varchar course "50, NULL"
+        tinyint year "UNSIGNED, NULL"
+        varchar gender "10, NULL"
+    }
+
+    events {
+        int event_id PK "AUTO_INCREMENT"
+        varchar title "150"
+        text description "NULL"
+        date event_date
+        varchar location "150, NULL"
+        timestamp created_at "DEFAULT CURRENT_TIMESTAMP"
+        varchar poster "255, NULL"
+    }
+
+    registrations {
+        int registration_id PK "AUTO_INCREMENT"
+        int student_id FK "REFERENCES students(student_id)"
+        int event_id FK "REFERENCES events(event_id)"
+        timestamp registration_date "DEFAULT CURRENT_TIMESTAMP"
+    }
+
+    remember_tokens {
+        int id PK "AUTO_INCREMENT"
+        int student_id FK "REFERENCES students(student_id) ON DELETE CASCADE"
+        char token_hash UK "64, UNIQUE"
+        datetime expires_at
+        int admin_id FK "REFERENCES admins(admin_id) ON DELETE CASCADE"
+    }
+
+    audit_logs {
+        int log_id PK "AUTO_INCREMENT"
+        int admin_id FK "REFERENCES admins(admin_id)"
+        varchar action "255"
+        text details "NULL"
+        timestamp created_at "DEFAULT CURRENT_TIMESTAMP"
+    }
+
+    students ||--o{ registrations : "registers for"
+    events ||--o{ registrations : "receives"
+    students ||--o{ remember_tokens : "authenticates"
+    admins ||--o{ remember_tokens : "authenticates"
+    admins ||--o{ audit_logs : "performs actions"
+

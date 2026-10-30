@@ -1,5 +1,10 @@
-
 <?php
+session_start();
+
+if (empty($_SESSION["contact_csrf"])) {
+    $_SESSION["contact_csrf"] = bin2hex(random_bytes(32));
+}
+
 $message = "";
 $messageType = "";
 
@@ -9,79 +14,104 @@ $subject = "";
 $details = "";
 
 function escapeOutput($value) {
-    return htmlspecialchars($value, ENT_QUOTES, "UTF-8");
+    return htmlspecialchars((string)$value, ENT_QUOTES, "UTF-8");
+}
+
+// P7-03: Prevent CSV formula injection by neutralizing dangerous formula prefix characters
+function sanitizeForCsv($value) {
+    $value = (string)$value;
+    if (isset($value[0]) && in_array($value[0], ['=', '+', '-', '@', "\t", "\r"], true)) {
+        return "'" . $value;
+    }
+    return $value;
 }
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $name = trim($_POST["name"] ?? "");
-    $email = trim($_POST["email"] ?? "");
-    $subject = trim($_POST["subject"] ?? "");
-    $details = trim($_POST["message"] ?? "");
+    $submittedCsrf = $_POST["csrf_token"] ?? "";
 
-    $errors = [];
+    // P7-05: CSRF verification
+    if (!hash_equals($_SESSION["contact_csrf"] ?? "", $submittedCsrf)) {
+        $message = "Invalid security token. Please refresh the page and try again.";
+        $messageType = "error";
+    } else {
+        // P7-02: Input sanitization & validation
+        $name = trim($_POST["name"] ?? "");
+        $email = strtolower(trim($_POST["email"] ?? ""));
+        $subject = trim($_POST["subject"] ?? "");
+        $details = trim($_POST["message"] ?? "");
 
-    if (strlen($name) < 2 || strlen($name) > 80) {
-        $errors[] = "Name must be 2 to 80 characters.";
-    }
+        $errors = [];
 
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $errors[] = "Enter a valid email address.";
-    }
-
-    if ($subject === "" || strlen($subject) > 120) {
-        $errors[] = "Subject is required and must be at most 120 characters.";
-    }
-
-    if (strlen($details) < 5 || strlen($details) > 2000) {
-        $errors[] = "Message must be 5 to 2000 characters.";
-    }
-
-    if (empty($errors)) {
-        $storageDir = dirname(__DIR__) . "/storage";
-
-        if (!is_dir($storageDir)) {
-            mkdir($storageDir, 0755, true);
+        if (strlen($name) < 2 || strlen($name) > 80 || !preg_match("/^[A-Za-z ]{2,80}$/", $name)) {
+            $errors[] = "Name must be 2 to 80 characters, letters and spaces only.";
         }
 
-        $file = $storageDir . "/contact_messages.csv";
-        $handle = fopen($file, "a");
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $errors[] = "Please enter a valid email address.";
+        }
 
-        if ($handle !== false) {
-            if (flock($handle, LOCK_EX)) {
-                if (filesize($file) === 0) {
+        // Clean subject from CRLF headers
+        $cleanSubject = str_replace(["\r", "\n", "\0"], ' ', $subject);
+        if (strlen($cleanSubject) < 2 || strlen($cleanSubject) > 120) {
+            $errors[] = "Subject is required and must be between 2 and 120 characters.";
+        }
+
+        // Clean message
+        $cleanDetails = str_replace("\0", '', $details);
+        if (strlen($cleanDetails) < 5 || strlen($cleanDetails) > 2000) {
+            $errors[] = "Message must be between 5 and 2000 characters.";
+        }
+
+        if (empty($errors)) {
+            $storageDir = dirname(__DIR__) . "/storage";
+
+            if (!is_dir($storageDir)) {
+                mkdir($storageDir, 0755, true);
+            }
+
+            $file = $storageDir . "/contact_messages.csv";
+            $handle = fopen($file, "a");
+
+            if ($handle !== false) {
+                if (flock($handle, LOCK_EX)) {
+                    if (filesize($file) === 0) {
+                        fputcsv($handle, [
+                            "Date", "Name", "Email", "Subject", "Message"
+                        ]);
+                    }
+
+                    // Write CSV with formula injection defense
                     fputcsv($handle, [
-                        "Date", "Name", "Email", "Subject", "Message"
+                        date("Y-m-d H:i:s"),
+                        sanitizeForCsv($name),
+                        sanitizeForCsv($email),
+                        sanitizeForCsv($cleanSubject),
+                        sanitizeForCsv($cleanDetails)
                     ]);
+
+                    fflush($handle);
+                    flock($handle, LOCK_UN);
+                    fclose($handle);
+
+                    $message = "Your message has been saved successfully.";
+                    $messageType = "success";
+
+                    // Clear fields and rotate CSRF
+                    $name = $email = $subject = $details = "";
+                    $_SESSION["contact_csrf"] = bin2hex(random_bytes(32));
+                } else {
+                    fclose($handle);
+                    $message = "Unable to lock storage file. Please try again.";
+                    $messageType = "error";
                 }
-
-                fputcsv($handle, [
-                    date("Y-m-d H:i:s"),
-                    $name,
-                    $email,
-                    $subject,
-                    $details
-                ]);
-
-                fflush($handle);
-                flock($handle, LOCK_UN);
-                fclose($handle);
-
-                $message = "Your message has been saved successfully.";
-                $messageType = "success";
-
-                $name = $email = $subject = $details = "";
             } else {
-                fclose($handle);
-                $message = "Unable to save your message. Please try again.";
+                $message = "Unable to open the storage file.";
                 $messageType = "error";
             }
         } else {
-            $message = "Unable to open the storage file.";
+            $message = implode(" ", $errors);
             $messageType = "error";
         }
-    } else {
-        $message = implode(" ", $errors);
-        $messageType = "error";
     }
 }
 ?>
@@ -90,71 +120,109 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact Us - StudentHub</title>
+    <title>StudentHub Portal - Contact</title>
     <link rel="stylesheet" href="../css/style.css">
-    <style>
-        .contact-box {
-            max-width: 600px;
-            margin: 40px auto;
-            padding: 25px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-        }
-        .contact-box label {
-            display: block;
-            margin-top: 15px;
-        }
-        .contact-box input,
-        .contact-box textarea {
-            width: 100%;
-            padding: 10px;
-            margin-top: 5px;
-            box-sizing: border-box;
-        }
-        .contact-box button {
-            margin-top: 18px;
-            padding: 10px 20px;
-            cursor: pointer;
-        }
-        .success { color: green; }
-        .error { color: #c62828; }
-    </style>
 </head>
 <body>
 
-<div class="contact-box">
-    <h1>Contact StudentHub</h1>
-    <p>Send us your questions or feedback.</p>
+    <header>
+        <h1>Contact StudentHub</h1>
+        <p>Get in touch with the StudentHub team.</p>
+    </header>
 
-    <?php if ($message !== ""): ?>
-        <p class="<?php echo escapeOutput($messageType); ?>">
-            <?php echo escapeOutput($message); ?>
-        </p>
-    <?php endif; ?>
+    <button id="menuToggle" type="button"
+        aria-expanded="false"
+        aria-controls="mainNav"
+        aria-label="Open navigation menu">
+    ☰ Menu
+    </button>
 
-    <form method="POST" action="contact.php">
-        <label for="name">Name</label>
-        <input type="text" id="name" name="name"
-            value="<?php echo escapeOutput($name); ?>"
-            minlength="2" maxlength="80" required>
+    <nav id="mainNav">
+        <a href="home.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="register.php">Register</a>
+        <a href="login.html">Login</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="events.html">Events</a>
+        <a href="profile.html">Profile</a>
+        <a href="contact.php">Contact</a>
+        <a href="admin.html">Admin</a>
+        <a href="faq.html">FAQ</a>
+        <a href="timetable.html">Timetable</a>
+        <button id="themeToggle" type="button">Dark Mode</button>
+    </nav>
 
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email"
-            value="<?php echo escapeOutput($email); ?>" required>
+    <main>
+        <section>
+            <h2>Contact Us</h2>
+            <p>
+                If you have any questions or need assistance, you can
+                contact the StudentHub team using the form below.
+            </p>
+        </section>
 
-        <label for="subject">Subject</label>
-        <input type="text" id="subject" name="subject"
-            value="<?php echo escapeOutput($subject); ?>"
-            maxlength="120" required>
+        <section>
+            <h2>Contact Form</h2>
 
-        <label for="message">Message</label>
-        <textarea id="message" name="message" rows="5"
-            minlength="5" maxlength="2000"
-            required><?php echo escapeOutput($details); ?></textarea>
+            <?php if ($message !== ""): ?>
+                <p class="<?= escapeOutput($messageType); ?>" role="status" aria-live="polite">
+                    <?= escapeOutput($message); ?>
+                </p>
+            <?php endif; ?>
 
-        <button type="submit">Submit Message</button>
-    </form>
-</div>
+            <form action="contact.php" method="post">
+                <input type="hidden" name="csrf_token" value="<?= escapeOutput($_SESSION["contact_csrf"] ?? ""); ?>">
 
+                <p>
+                    <label for="name">Name:</label><br>
+                    <input type="text" id="name" name="name"
+                           value="<?= escapeOutput($name); ?>"
+                           minlength="2" maxlength="80"
+                           pattern="[A-Za-z ]{2,80}"
+                           title="Letters and spaces only (2-80 characters)"
+                           required>
+                </p>
+
+                <p>
+                    <label for="email">Email:</label><br>
+                    <input type="email" id="email" name="email"
+                           value="<?= escapeOutput($email); ?>"
+                           required>
+                </p>
+
+                <p>
+                    <label for="subject">Subject:</label><br>
+                    <input type="text" id="subject" name="subject"
+                           value="<?= escapeOutput($subject); ?>"
+                           minlength="2" maxlength="120"
+                           required>
+                </p>
+
+                <p>
+                    <label for="message">Message:</label><br>
+                    <textarea id="message" name="message" rows="5" cols="30"
+                              minlength="5" maxlength="2000"
+                              required><?= escapeOutput($details); ?></textarea>
+                </p>
+
+                <p>
+                    <button type="submit">Send Message</button>
+                    <button type="reset">Clear</button>
+                </p>
+            </form>
+        </section>
+
+        <section>
+            <h2>Contact Information</h2>
+            <p>Email: studenthub@example.com</p>
+            <p>Phone: +91 00000 00000</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 StudentHub Portal. All rights reserved.</p>
+    </footer>
+
+    <script src="../js/script.js"></script>
 </body>
 </html>
